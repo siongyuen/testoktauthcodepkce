@@ -41,7 +41,7 @@ namespace TestOktaPKCE
             {
                 var context = await httpListener.GetContextAsync();
                 var request = context.Request;
-                HttpListenerResponse clientSideResponse = context.Response;
+              
 
                 if (request.Url.AbsolutePath == "/callback")
                 {
@@ -60,12 +60,18 @@ namespace TestOktaPKCE
                         return;
                     }
 
+                    // server side
+
+
 
                     // Exchange code for tokens
                     string tokenEndpoint = $"{OktaDomain}/oauth2/default/v1/token"; // Replace with your Okta token endpoint                   
 
                     string redirectUri = "http://localhost:12345/callback"; // Replace with your redirect URI
 
+
+
+                    
 
                     using (var httpClient = new HttpClient())
                     {
@@ -88,7 +94,7 @@ namespace TestOktaPKCE
                             // Use the tokens as needed
                             string accessToken = tokens.GetProperty("access_token").GetString();
                             string idToken = tokens.GetProperty("id_token").GetString();
-                            clientSideResponse.Redirect("http://com.okta.dev-95411323:");
+                       
                             
                             // Signal the rest of your application that auth was successful
                             // For example, update the UI or store the tokens securely
