@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace TestOktaPKCE
 {
@@ -40,13 +41,15 @@ namespace TestOktaPKCE
             {
                 var context = await httpListener.GetContextAsync();
                 var request = context.Request;
+                HttpListenerResponse clientSideResponse = context.Response;
 
                 if (request.Url.AbsolutePath == "/callback")
                 {
                     // Extract the code and state from the query string
                     NameValueCollection query = request.QueryString;
                     string code = query["code"];
-                    string state = query["state"];
+                    string state = query["state"];                           
+
 
                     // Validate the state parameter for CSRF protection
                     string expectedState = "state-12345"; // Replace with your actual state value
@@ -56,6 +59,7 @@ namespace TestOktaPKCE
                         Console.WriteLine("State value did not match expected value.");
                         return;
                     }
+
 
                     // Exchange code for tokens
                     string tokenEndpoint = $"{OktaDomain}/oauth2/default/v1/token"; // Replace with your Okta token endpoint                   
@@ -84,15 +88,16 @@ namespace TestOktaPKCE
                             // Use the tokens as needed
                             string accessToken = tokens.GetProperty("access_token").GetString();
                             string idToken = tokens.GetProperty("id_token").GetString();
-
+                            clientSideResponse.Redirect("http://com.okta.dev-95411323:");
+                            
                             // Signal the rest of your application that auth was successful
                             // For example, update the UI or store the tokens securely
 
                             // Close the listener
-                            
+
                             MessageBox.Show("Token obtained successfully.");
                             MessageBox.Show("Token Validated =" + ValidateToken(accessToken, OktaDomain).ToString());
-                            httpListener.Stop();
+                            
                         }
                         else
                         {
@@ -100,6 +105,7 @@ namespace TestOktaPKCE
                             MessageBox.Show("Failed to obtained token.");
                         }
                     }
+
                 }
             }
         }
