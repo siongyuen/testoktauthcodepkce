@@ -14,6 +14,7 @@ using System.Security.Cryptography;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Linq;
 
 namespace TestOktaPKCE
 {
@@ -101,7 +102,9 @@ namespace TestOktaPKCE
         {
             try
             {
-                var result = GetWeatherForecast().Result ;
+                var result = GetWeatherForecast() ;
+                
+
              
             }
             catch (Exception ex)
@@ -129,7 +132,7 @@ namespace TestOktaPKCE
             return await response.Content.ReadAsStringAsync();
         }
 
-        public async Task<IEnumerable<WeatherForecast>> GetWeatherForecast()
+        public IEnumerable<WeatherForecast> GetWeatherForecast()
         {           
             
 
@@ -139,10 +142,10 @@ namespace TestOktaPKCE
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponse.AccessToken );
 
             // Send the GET request
-            HttpResponseMessage response = await httpClient.GetAsync("https://localhost:7064/weatherforecast");
+            HttpResponseMessage response =  httpClient.GetAsync("https://localhost:7064/weatherforecast").Result;
             if (response.IsSuccessStatusCode)
             {
-                string json = await response.Content.ReadAsStringAsync();
+                string json = response.Content.ReadAsStringAsync().Result;
                 var forecasts = JsonConvert.DeserializeObject<IEnumerable<WeatherForecast>>(json); // Assuming WeatherForecast is your model class
                                                                                                // Process the data
                 return forecasts;
