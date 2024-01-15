@@ -11,7 +11,7 @@ namespace AuthCodePKCEServerSide.Controllers
 
         [HttpPost]
         [Route("exchange-code")]
-        public async Task<IActionResult> ExchangeCodeForToken([FromBody] CodeExchangeRequest request)
+        public async Task<IActionResult> ExchangeCodeForToken([FromForm] CodeExchangeRequest request)
         {
             using (var httpClient = new HttpClient())
             {
@@ -22,7 +22,7 @@ namespace AuthCodePKCEServerSide.Controllers
                 {
             new KeyValuePair<string, string>("grant_type", "authorization_code"),
             new KeyValuePair<string, string>("code", request.Code),
-            new KeyValuePair<string, string>("redirect_uri", "your-redirect-uri"), // Replace with your redirect URI
+            new KeyValuePair<string, string>("redirect_uri", "http://localhost:12345/callback"), // Replace with your redirect URI
             new KeyValuePair<string, string>("client_id", clientId),
             new KeyValuePair<string, string>("code_verifier", request.CodeVerifier)
         });

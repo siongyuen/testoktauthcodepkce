@@ -31,3 +31,8 @@ C:\Users\SeanCheahSiongYuen\Source\Repos\testoktauthcodepkce\AuthCodePKCEServerS
 C:\Users\SeanCheahSiongYuen\Source\Repos\testoktauthcodepkce\AuthCodePKCEServerSide\obj\Debug\net8.0\AuthCodePKCEServerSide.pdb
 C:\Users\SeanCheahSiongYuen\Source\Repos\testoktauthcodepkce\AuthCodePKCEServerSide\obj\Debug\net8.0\AuthCodePKCEServerSide.genruntimeconfig.cache
 C:\Users\SeanCheahSiongYuen\Source\Repos\testoktauthcodepkce\AuthCodePKCEServerSide\obj\Debug\net8.0\ref\AuthCodePKCEServerSide.dll
+C:\Users\SeanCheahSiongYuen\Source\Repos\testoktauthcodepkce\AuthCodePKCEServerSide\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\SeanCheahSiongYuen\Source\Repos\testoktauthcodepkce\AuthCodePKCEServerSide\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\SeanCheahSiongYuen\Source\Repos\testoktauthcodepkce\AuthCodePKCEServerSide\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\SeanCheahSiongYuen\Source\Repos\testoktauthcodepkce\AuthCodePKCEServerSide\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\SeanCheahSiongYuen\Source\Repos\testoktauthcodepkce\AuthCodePKCEServerSide\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll

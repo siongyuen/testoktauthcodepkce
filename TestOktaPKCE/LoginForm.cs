@@ -64,10 +64,7 @@ namespace TestOktaPKCE
 
                     string response = await SendCodeToServerAsync("https://localhost:7064/exchange-code", code, _codeVerifier);
 
-
-                   
-                    
-
+                    MessageBox.Show("Access Token Obtain : " + response);
             
 
                 }
@@ -100,8 +97,8 @@ namespace TestOktaPKCE
         {
             var content = new FormUrlEncodedContent(new[]
             {
-        new KeyValuePair<string, string>("code", code),
-        new KeyValuePair<string, string>("code_verifier", codeVerifier)
+        new KeyValuePair<string, string>("Code", code),
+        new KeyValuePair<string, string>("CodeVerifier", codeVerifier)
     });
 
             var response = await httpClient.PostAsync(serverEndpoint, content);
