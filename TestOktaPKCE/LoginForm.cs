@@ -100,7 +100,7 @@ namespace TestOktaPKCE
         {
             try
             {
-                var result = GetWeatherForecast();
+                var result = GetWeatherForecast().Result ;
              
             }
             catch (Exception ex)
@@ -129,20 +129,19 @@ namespace TestOktaPKCE
         }
 
         public async Task<IEnumerable<WeatherForecast>> GetWeatherForecast()
-        {
-            IEnumerable<WeatherForecast> forecasts;
-            httpClient.BaseAddress = new Uri("https://localhost:7064");
+        {           
+            
 
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken );
 
             // Send the GET request
-            HttpResponseMessage response = await httpClient.GetAsync("/weatherforecast");
+            HttpResponseMessage response = await httpClient.GetAsync("https://localhost:7064/weatherforecast");
             if (response.IsSuccessStatusCode)
             {
                 string json = await response.Content.ReadAsStringAsync();
-                forecasts = JsonConvert.DeserializeObject<IEnumerable<WeatherForecast>>(json); // Assuming WeatherForecast is your model class
+                var forecasts = JsonConvert.DeserializeObject<IEnumerable<WeatherForecast>>(json); // Assuming WeatherForecast is your model class
                                                                                                // Process the data
                 return forecasts;
             }

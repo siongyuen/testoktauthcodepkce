@@ -38,43 +38,9 @@ namespace AuthCodePKCEServerSide.Controllers
                 return Ok(tokenResponse);
             }
         }
-        public bool ValidateToken(string token, string oktaDomain)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var jsonWebKeySet = GetJsonWebKeySetAsync().Result; // Implement this to get JWKS from Okta
-            var parameters = new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKeys = jsonWebKeySet.Keys,
-                ValidateIssuer = true,
-                ValidIssuer = $"{oktaDomain}/oauth2/default",
-                ValidateAudience = false,
-                ValidateLifetime = true
-            };
+   
 
-            try
-            {
-                tokenHandler.ValidateToken(token, parameters, out var validatedToken);
-                return validatedToken != null;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public async Task<JsonWebKeySet> GetJsonWebKeySetAsync()
-        {
-            var httpClient = new HttpClient();
-            var jwksUri = $"{OktaDomain}/oauth2/default/v1/keys";
-            var response = await httpClient.GetAsync(jwksUri);
-            response.EnsureSuccessStatusCode();
-
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-            var jsonWebKeySet = new JsonWebKeySet(jsonResponse);
-
-            return jsonWebKeySet;
-        }
+   
     }
     public class CodeExchangeRequest
     {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using Newtonsoft.Json;
 
 namespace AuthCodePKCEServerSide
 {
@@ -13,6 +14,7 @@ namespace AuthCodePKCEServerSide
         public async Task<bool> ValidateToken(string token, string oktaDomain)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(token);
             var jsonWebKeySet = GetJsonWebKeySetAsync(oktaDomain).Result; // Implement this to get JWKS from Okta
             var parameters = new TokenValidationParameters
             {
@@ -46,7 +48,19 @@ namespace AuthCodePKCEServerSide
 
             return jsonWebKeySet;
         }
+        public class TokenResponse
+        {
+            [JsonProperty("token_type")]
+            public string TokenType { get; set; }
 
+            [JsonProperty("expires_in")]
+            public int ExpiresIn { get; set; }
+
+            [JsonProperty("access_token")]
+            public string AccessToken { get; set; }
+
+            // Include other properties as needed
+        }
     }   
 
 }
