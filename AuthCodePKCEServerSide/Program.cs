@@ -17,14 +17,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             {
                 OnMessageReceived = async context =>
                 {
+
                     var tokenValidator = context.HttpContext.RequestServices.GetRequiredService<AuthCodePKCEServerSide.ICustomTokenValidator>();
                     var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+                    context.Token = token;
                     var isValidToken = token != null && await tokenValidator.ValidateToken(token, "https://dev-95411323.okta.com");
 
                     if (!isValidToken)
                     {
                         context.Fail("Invalid token");
                     }
+                
                
                 }
             };

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace AuthCodePKCEServerSide.Controllers
 {
     [ApiController]
-    [Route("[controller]"), Authorize ]
+    [Route("[controller]") ]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
@@ -19,7 +19,7 @@ namespace AuthCodePKCEServerSide.Controllers
             _logger = logger;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
+        [HttpGet(Name = "GetWeatherForecast"), Authorize ]
         public IEnumerable<WeatherForecast> Get()
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast

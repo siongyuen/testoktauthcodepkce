@@ -13,6 +13,7 @@ using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace TestOktaPKCE
 {
@@ -134,7 +135,8 @@ namespace TestOktaPKCE
 
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken );
+            var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(_accessToken);
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponse.AccessToken );
 
             // Send the GET request
             HttpResponseMessage response = await httpClient.GetAsync("https://localhost:7064/weatherforecast");
@@ -160,6 +162,20 @@ namespace TestOktaPKCE
             public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 
             public string Summary { get; set; }
+        }
+
+        public class TokenResponse
+        {
+            [JsonProperty("token_type")]
+            public string TokenType { get; set; }
+
+            [JsonProperty("expires_in")]
+            public int ExpiresIn { get; set; }
+
+            [JsonProperty("access_token")]
+            public string AccessToken { get; set; }
+
+            // Include other properties as needed
         }
     }
 }
