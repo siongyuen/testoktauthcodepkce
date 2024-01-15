@@ -8,3 +8,5 @@
 /TestOktaPKCE/obj/Debug/TestOktaPKCE.exe
 /TestOktaPKCE/obj/Debug/TestOktaPKCE.pdb
 /.vs/slnx.sqlite
+/AuthCodePKCEServerSide/obj/Release/net8.0/AuthCodePKCEServerSide.assets.cache
+/AuthCodePKCEServerSide/obj/Release/net8.0/AuthCodePKCEServerSide.csproj.AssemblyReference.cache
