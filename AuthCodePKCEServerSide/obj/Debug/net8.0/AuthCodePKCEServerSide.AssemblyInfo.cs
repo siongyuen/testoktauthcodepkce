@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AuthCodePKCEServerSide")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+46870316d0f6af7f455363c1b521e437af2a6945")]
 [assembly: System.Reflection.AssemblyProductAttribute("AuthCodePKCEServerSide")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AuthCodePKCEServerSide")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -28,7 +28,7 @@ namespace AuthCodePKCEServerSide
 
             try
             {
-                tokenHandler.ValidateToken(token, parameters, out var validatedToken);
+                tokenHandler.ValidateToken(tokenResponse.AccessToken , parameters, out var validatedToken);
                 return validatedToken != null;
             }
             catch
