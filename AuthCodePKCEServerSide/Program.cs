@@ -13,6 +13,7 @@ builder.Services.AddSingleton<AuthCodePKCEServerSide.ICustomTokenValidator, Auth
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
         {
+            options.SaveToken = true;
             options.Events = new JwtBearerEvents
             {
                 OnMessageReceived = async context =>
