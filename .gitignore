@@ -27,3 +27,11 @@ bin/
 /AuthCodePKCEServerSide/obj/Debug/net8.0/AuthCodePKCEServerSide.pdb
 /AuthCodePKCEServerSide/obj/Debug/net8.0/AuthCodePKCEServerSide.genruntimeconfig.cache
 /TestOktaPKCE/obj/Debug/TestOktaPKCEClientSide.csproj.AssemblyReference.cache
+*.bin
+/.vs/TestOktaPKCE/DesignTimeBuild/.dtbcache.v2
+/.vs/TestOktaPKCE/v17/.futdcache.v2
+/.vs/testoktauthcodepkce/FileContentIndex/69f704ff-9c0a-4dbc-b792-96a35c6af3a3.vsidx
+*.vsidx
+/.vs/testoktauthcodepkce/v17/.wsuo
+/.vs/VSWorkspaceState.json
+/AuthCodePKCEServerSide/obj/Release/net8.0/AuthCodePKCEServerSide.GeneratedMSBuildEditorConfig.editorconfig
