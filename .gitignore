@@ -10,3 +10,4 @@
 /.vs/slnx.sqlite
 /AuthCodePKCEServerSide/obj/Release/net8.0/AuthCodePKCEServerSide.assets.cache
 /AuthCodePKCEServerSide/obj/Release/net8.0/AuthCodePKCEServerSide.csproj.AssemblyReference.cache
+bin/
