@@ -25,6 +25,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     {
                         context.Fail("Invalid token");
                     }
+               
                 }
             };
         });
