@@ -15,7 +15,7 @@ namespace AuthCodePKCEServerSide.Controllers
         {
             using (var httpClient = new HttpClient())
             {
-                var tokenEndpoint = "https://dev-95411323.okta.com/oauth2/default/v1/token"; // Replace with your token endpoint
+                var tokenEndpoint = $"{OktaDomain}/oauth2/default/v1/token"; // Replace with your token endpoint
                 var clientId = "0oaefdvlfqiav6snB5d7"; // Replace with your client ID
 
                 var content = new FormUrlEncodedContent(new[]

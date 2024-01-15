@@ -1,13 +1,16 @@
 {
   "version": 2,
-  "dgSpecHash": "hp1R0b34fzS5rwpPIB8nC4zke16xg71KHjSHogWdCToNyQ1+dgfhXArNTFLvSMEAUmtOUxbviNtfYSD0xRbkRA==",
+  "dgSpecHash": "UmAh9TnCZf1X2JTSYw91l5QWL3l0deB85HlfL4/xmDUYyz1w/AjNj3FjSLgnvuVptbduGUtaXmefO/qryEGEWA==",
   "success": true,
   "projectFilePath": "C:\\Users\\SeanCheahSiongYuen\\Source\\Repos\\testoktauthcodepkce\\AuthCodePKCEServerSide\\AuthCodePKCEServerSide.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\SeanCheahSiongYuen\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\8.0.1\\microsoft.aspnetcore.authentication.jwtbearer.8.0.1.nupkg.sha512",
     "C:\\Users\\SeanCheahSiongYuen\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "C:\\Users\\SeanCheahSiongYuen\\.nuget\\packages\\microsoft.identitymodel.abstractions\\7.2.0\\microsoft.identitymodel.abstractions.7.2.0.nupkg.sha512",
     "C:\\Users\\SeanCheahSiongYuen\\.nuget\\packages\\microsoft.identitymodel.jsonwebtokens\\7.2.0\\microsoft.identitymodel.jsonwebtokens.7.2.0.nupkg.sha512",
     "C:\\Users\\SeanCheahSiongYuen\\.nuget\\packages\\microsoft.identitymodel.logging\\7.2.0\\microsoft.identitymodel.logging.7.2.0.nupkg.sha512",
+    "C:\\Users\\SeanCheahSiongYuen\\.nuget\\packages\\microsoft.identitymodel.protocols\\7.1.2\\microsoft.identitymodel.protocols.7.1.2.nupkg.sha512",
+    "C:\\Users\\SeanCheahSiongYuen\\.nuget\\packages\\microsoft.identitymodel.protocols.openidconnect\\7.1.2\\microsoft.identitymodel.protocols.openidconnect.7.1.2.nupkg.sha512",
     "C:\\Users\\SeanCheahSiongYuen\\.nuget\\packages\\microsoft.identitymodel.tokens\\7.2.0\\microsoft.identitymodel.tokens.7.2.0.nupkg.sha512",
     "C:\\Users\\SeanCheahSiongYuen\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
     "C:\\Users\\SeanCheahSiongYuen\\.nuget\\packages\\swashbuckle.aspnetcore\\6.4.0\\swashbuckle.aspnetcore.6.4.0.nupkg.sha512",

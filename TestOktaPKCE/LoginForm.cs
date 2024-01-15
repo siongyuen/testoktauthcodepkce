@@ -9,6 +9,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using System.Text;
+using System.Net.Http.Headers;
+using System.Security.Cryptography;
+using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace TestOktaPKCE
 {
@@ -20,6 +24,7 @@ namespace TestOktaPKCE
         private const string OktaDomain = "https://dev-95411323.okta.com"; // Replace with your Okta domain
         private const string ClientId = "0oaefdvlfqiav6snB5d7"; // Replace with your client ID
         private static readonly HttpClient httpClient = new HttpClient();
+        private string _accessToken;
 
         public LoginForm()
         {
@@ -62,9 +67,9 @@ namespace TestOktaPKCE
 
                     // server side
 
-                    string response = await SendCodeToServerAsync("https://localhost:7064/exchange-code", code, _codeVerifier);
+                    _accessToken = await SendCodeToServerAsync("https://localhost:7064/exchange-code", code, _codeVerifier);
 
-                    MessageBox.Show("Access Token Obtain : " + response);
+                    MessageBox.Show("Access Token Obtain : " + _accessToken);
             
 
                 }
@@ -91,6 +96,19 @@ namespace TestOktaPKCE
             }
         }
 
+        private async void button2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var result = GetWeatherForecast();
+             
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
 
 
         public async Task<string> SendCodeToServerAsync(string serverEndpoint, string code, string codeVerifier)
@@ -108,6 +126,41 @@ namespace TestOktaPKCE
             }
 
             return await response.Content.ReadAsStringAsync();
+        }
+
+        public async Task<IEnumerable<WeatherForecast>> GetWeatherForecast()
+        {
+            IEnumerable<WeatherForecast> forecasts;
+            httpClient.BaseAddress = new Uri("https://localhost:7064");
+
+            httpClient.DefaultRequestHeaders.Accept.Clear();
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken );
+
+            // Send the GET request
+            HttpResponseMessage response = await httpClient.GetAsync("/weatherforecast");
+            if (response.IsSuccessStatusCode)
+            {
+                string json = await response.Content.ReadAsStringAsync();
+                forecasts = JsonConvert.DeserializeObject<IEnumerable<WeatherForecast>>(json); // Assuming WeatherForecast is your model class
+                                                                                               // Process the data
+                return forecasts;
+            }
+            else
+            {
+                return null;
+            }
+           ;
+        }
+        public class WeatherForecast
+        {
+            public DateTime Date { get; set; }
+
+            public int TemperatureC { get; set; }
+
+            public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+
+            public string Summary { get; set; }
         }
     }
 }
