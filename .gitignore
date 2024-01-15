@@ -25,3 +25,5 @@ bin/
 /AuthCodePKCEServerSide/obj/Debug/net8.0/AuthCodePKCEServerSide.dll
 /AuthCodePKCEServerSide/obj/Debug/net8.0/AuthCodePKCEServerSide.GeneratedMSBuildEditorConfig.editorconfig
 /AuthCodePKCEServerSide/obj/Debug/net8.0/AuthCodePKCEServerSide.pdb
+/AuthCodePKCEServerSide/obj/Debug/net8.0/AuthCodePKCEServerSide.genruntimeconfig.cache
+/TestOktaPKCE/obj/Debug/TestOktaPKCEClientSide.csproj.AssemblyReference.cache
