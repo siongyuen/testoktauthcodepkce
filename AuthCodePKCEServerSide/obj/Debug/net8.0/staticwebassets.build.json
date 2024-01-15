@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "HEvlqdOtRaMqNQfavXcQZtlMeccRB8hzUOWr29+riWk=",
+  "Source": "AuthCodePKCEServerSide",
+  "BasePath": "_content/AuthCodePKCEServerSide",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

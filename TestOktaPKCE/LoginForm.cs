@@ -7,8 +7,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
+
 using System.Text;
 
 namespace TestOktaPKCE
@@ -20,6 +19,7 @@ namespace TestOktaPKCE
         private string _codeVerifier;
         private const string OktaDomain = "https://dev-95411323.okta.com"; // Replace with your Okta domain
         private const string ClientId = "0oaefdvlfqiav6snB5d7"; // Replace with your client ID
+        private static readonly HttpClient httpClient = new HttpClient();
 
         public LoginForm()
         {
@@ -62,55 +62,13 @@ namespace TestOktaPKCE
 
                     // server side
 
+                    string response = await SendCodeToServerAsync("https://localhost:7064/exchange-code", code, _codeVerifier);
 
 
-                    // Exchange code for tokens
-                    string tokenEndpoint = $"{OktaDomain}/oauth2/default/v1/token"; // Replace with your Okta token endpoint                   
-
-                    string redirectUri = "http://localhost:12345/callback"; // Replace with your redirect URI
-
-
-
+                   
                     
 
-                    using (var httpClient = new HttpClient())
-                    {
-                        var requestBody = new FormUrlEncodedContent(new[]
-                        {
-                        new KeyValuePair<string, string>("grant_type", "authorization_code"),
-                        new KeyValuePair<string, string>("code", code),
-                        new KeyValuePair<string, string>("redirect_uri", redirectUri),
-                        new KeyValuePair<string, string>("client_id", ClientId),
-                        new KeyValuePair<string, string>("code_verifier", _codeVerifier)
-
-        });
-
-                        var response = await httpClient.PostAsync(tokenEndpoint, requestBody);
-                        if (response.IsSuccessStatusCode)
-                        {
-                            string responseContent = await response.Content.ReadAsStringAsync();
-                            var tokens = JsonSerializer.Deserialize<JsonElement>(responseContent);
-
-                            // Use the tokens as needed
-                            string accessToken = tokens.GetProperty("access_token").GetString();
-                            string idToken = tokens.GetProperty("id_token").GetString();
-                       
-                            
-                            // Signal the rest of your application that auth was successful
-                            // For example, update the UI or store the tokens securely
-
-                            // Close the listener
-
-                            MessageBox.Show("Token obtained successfully.");
-                            MessageBox.Show("Token Validated =" + ValidateToken(accessToken, OktaDomain).ToString());
-                            
-                        }
-                        else
-                        {
-                            // Handle token exchange failure
-                            MessageBox.Show("Failed to obtained token.");
-                        }
-                    }
+            
 
                 }
             }
@@ -136,42 +94,23 @@ namespace TestOktaPKCE
             }
         }
 
-        public bool ValidateToken(string token, string oktaDomain)
+
+
+        public async Task<string> SendCodeToServerAsync(string serverEndpoint, string code, string codeVerifier)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var jsonWebKeySet = GetJsonWebKeySetAsync().Result ; // Implement this to get JWKS from Okta
-            var parameters = new TokenValidationParameters
+            var content = new FormUrlEncodedContent(new[]
             {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKeys = jsonWebKeySet.Keys,
-                ValidateIssuer = true,
-                ValidIssuer = $"{oktaDomain}/oauth2/default",
-                ValidateAudience = false,                
-                ValidateLifetime = true
-            };
+        new KeyValuePair<string, string>("code", code),
+        new KeyValuePair<string, string>("code_verifier", codeVerifier)
+    });
 
-            try
+            var response = await httpClient.PostAsync(serverEndpoint, content);
+            if (!response.IsSuccessStatusCode)
             {
-                tokenHandler.ValidateToken(token, parameters, out var validatedToken);
-                return validatedToken != null;
+                throw new Exception("Error while sending code to server.");
             }
-            catch
-            {
-                return false;
-            }
-        }
 
-        public async Task<JsonWebKeySet> GetJsonWebKeySetAsync()
-        {
-           var httpClient = new HttpClient();
-            var jwksUri = $"{OktaDomain}/oauth2/default/v1/keys";
-            var response = await httpClient.GetAsync(jwksUri);
-            response.EnsureSuccessStatusCode();
-
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-            var jsonWebKeySet = new JsonWebKeySet(jsonResponse);
-
-            return jsonWebKeySet;
+            return await response.Content.ReadAsStringAsync();
         }
     }
 }
