@@ -28,7 +28,7 @@ namespace TestOktaPKCE
         private const string ClientId = "0oaefdvlfqiav6snB5d7"; // Replace with your client ID
         private static readonly HttpClient httpClient = new HttpClient();
         private string _accessToken;
-        private string _refreshedToken;
+        
 
         public LoginForm()
         {
@@ -50,14 +50,14 @@ namespace TestOktaPKCE
             {
                 var context = await httpListener.GetContextAsync();
                 var request = context.Request;
-              
+
 
                 if (request.Url.AbsolutePath == "/callback")
                 {
                     // Extract the code and state from the query string
                     NameValueCollection query = request.QueryString;
                     string code = query["code"];
-                    string state = query["state"];                           
+                    string state = query["state"];
 
 
                     // Validate the state parameter for CSRF protection
@@ -69,12 +69,12 @@ namespace TestOktaPKCE
                         return;
                     }
 
-                
+
 
                     _accessToken = await SendCodeToServerAsync("https://localhost:7064/exchange-code", code, _codeVerifier);
 
                     MessageBox.Show("Access Token Obtain : " + _accessToken);
-            
+
 
                 }
             }
@@ -104,10 +104,10 @@ namespace TestOktaPKCE
         {
             try
             {
-                var result = GetWeatherForecast() ;
+                var result = GetWeatherForecast();
 
                 MessageBox.Show($"Temperature from API is : {result.FirstOrDefault().TemperatureC.ToString()}");
-             
+
             }
             catch (Exception ex)
             {
@@ -135,21 +135,21 @@ namespace TestOktaPKCE
         }
 
         public IEnumerable<WeatherForecast> GetWeatherForecast()
-        {           
-            
+        {
+
 
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(_accessToken);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponse.AccessToken );
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponse.AccessToken);
 
             // Send the GET request
-            HttpResponseMessage response =  httpClient.GetAsync("https://localhost:7064/weatherforecast").Result;
+            HttpResponseMessage response = httpClient.GetAsync("https://localhost:7064/weatherforecast").Result;
             if (response.IsSuccessStatusCode)
             {
                 string json = response.Content.ReadAsStringAsync().Result;
                 var forecasts = JsonConvert.DeserializeObject<IEnumerable<WeatherForecast>>(json); // Assuming WeatherForecast is your model class
-                                                                                               // Process the data
+                                                                                                   // Process the data
                 return forecasts;
             }
             else
@@ -188,37 +188,9 @@ namespace TestOktaPKCE
         }
         private void button3_Click(object sender, EventArgs e)
         {
-            var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(_accessToken);
-            _refreshedToken= OktaAuthHelper.UseRefreshTokenAsync (OktaDomain, ClientId, tokenResponse.RefreshToken).Result.ToString();
-            MessageBox.Show(_refreshedToken);
-        }
-        public async Task<string> RequestAuthorizationCodeWithPkceAsync(
-       string oktaDomain,
-       string clientId,
-       string redirectUri,
-       string codeChallenge)
-        {
-            string baseUrl = $"https://{oktaDomain}/oauth2/default/v1/authorize";
-            string scope = HttpUtility.UrlEncode("openid offline_access");
-            string state = Guid.NewGuid().ToString(); // Or your predefined state
-            string codeChallengeMethod = "S256";
-
-            // Assemble the URL with query parameters
-            string url = $"{baseUrl}?client_id={clientId}&response_type=code&scope={scope}&redirect_uri={HttpUtility.UrlEncode(redirectUri)}&state={state}&code_challenge_method={codeChallengeMethod}&code_challenge={codeChallenge}";
-
-            // Send a GET request to the specified Uri
-            HttpResponseMessage response = await httpClient.GetAsync(url);
-
-            if (response.IsSuccessStatusCode)
-            {
-                // Return the response content if the request was successful
-                return await response.Content.ReadAsStringAsync();
-            }
-            else
-            {
-                // Return an error message indicating the request failed
-                return $"Failed to receive response: {response.StatusCode}";
-            }
+           
         }
     }
+
+   
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
+using Newtonsoft.Json;
 
 namespace TestOktaPKCE
 {
@@ -28,8 +30,6 @@ namespace TestOktaPKCE
             return Tuple.Create(codeVerifier, authorizationRequest);
         }
 
-
-
-
+      
     }
 }
