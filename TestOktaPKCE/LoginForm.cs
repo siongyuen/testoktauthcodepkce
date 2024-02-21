@@ -15,6 +15,7 @@ using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Linq;
+using System.Web;
 
 namespace TestOktaPKCE
 {
@@ -27,6 +28,7 @@ namespace TestOktaPKCE
         private const string ClientId = "0oaefdvlfqiav6snB5d7"; // Replace with your client ID
         private static readonly HttpClient httpClient = new HttpClient();
         private string _accessToken;
+        private string _refreshedToken;
 
         public LoginForm()
         {
@@ -67,7 +69,7 @@ namespace TestOktaPKCE
                         return;
                     }
 
-                    // server side
+                
 
                     _accessToken = await SendCodeToServerAsync("https://localhost:7064/exchange-code", code, _codeVerifier);
 
@@ -103,8 +105,8 @@ namespace TestOktaPKCE
             try
             {
                 var result = GetWeatherForecast() ;
-                
 
+                MessageBox.Show($"Temperature from API is : {result.FirstOrDefault().TemperatureC.ToString()}");
              
             }
             catch (Exception ex)
@@ -167,6 +169,7 @@ namespace TestOktaPKCE
             public string Summary { get; set; }
         }
 
+
         public class TokenResponse
         {
             [JsonProperty("token_type")]
@@ -178,7 +181,44 @@ namespace TestOktaPKCE
             [JsonProperty("access_token")]
             public string AccessToken { get; set; }
 
+            [JsonProperty("refresh_token")]
+            public string RefreshToken { get; set; } // Added property for refresh token
+
             // Include other properties as needed
+        }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(_accessToken);
+            _refreshedToken= OktaAuthHelper.UseRefreshTokenAsync (OktaDomain, ClientId, tokenResponse.RefreshToken).Result.ToString();
+            MessageBox.Show(_refreshedToken);
+        }
+        public async Task<string> RequestAuthorizationCodeWithPkceAsync(
+       string oktaDomain,
+       string clientId,
+       string redirectUri,
+       string codeChallenge)
+        {
+            string baseUrl = $"https://{oktaDomain}/oauth2/default/v1/authorize";
+            string scope = HttpUtility.UrlEncode("openid offline_access");
+            string state = Guid.NewGuid().ToString(); // Or your predefined state
+            string codeChallengeMethod = "S256";
+
+            // Assemble the URL with query parameters
+            string url = $"{baseUrl}?client_id={clientId}&response_type=code&scope={scope}&redirect_uri={HttpUtility.UrlEncode(redirectUri)}&state={state}&code_challenge_method={codeChallengeMethod}&code_challenge={codeChallenge}";
+
+            // Send a GET request to the specified Uri
+            HttpResponseMessage response = await httpClient.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Return the response content if the request was successful
+                return await response.Content.ReadAsStringAsync();
+            }
+            else
+            {
+                // Return an error message indicating the request failed
+                return $"Failed to receive response: {response.StatusCode}";
+            }
         }
     }
 }

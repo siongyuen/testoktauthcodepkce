@@ -35,3 +35,14 @@ bin/
 /.vs/testoktauthcodepkce/v17/.wsuo
 /.vs/VSWorkspaceState.json
 /AuthCodePKCEServerSide/obj/Release/net8.0/AuthCodePKCEServerSide.GeneratedMSBuildEditorConfig.editorconfig
+/TestAuthCodePKCEServerSide/obj/Debug/net8.0/TestAuthCodePKCEServerSide.AssemblyInfo.cs
+/AuthCodePKCEServerSide/obj/Release/net8.0/AuthCodePKCEServerSide.AssemblyInfo.cs
+/AuthCodePKCEServerSide/obj/Debug/net8.0/AuthCodePKCEServerSide.csproj.CoreCompileInputs.cache
+/AuthCodePKCEServerSide/obj/Release/net8.0/AuthCodePKCEServerSide.AssemblyInfoInputs.cache
+/AuthCodePKCEServerSide/obj/AuthCodePKCEServerSide.csproj.nuget.dgspec.json
+/AuthCodePKCEServerSide/obj/project.assets.json
+/AuthCodePKCEServerSide/obj/project.nuget.cache
+/TestAuthCodePKCEServerSide/obj/Debug/net8.0/TestAuthCodePKCEServerSide.AssemblyInfoInputs.cache
+/TestOktaPKCE/obj/Debug/TestOktaPKCEClientSide.csproj.GenerateResource.cache
+/TestAuthCodePKCEServerSide/obj/Release/net8.0/TestAuthCodePKCEServerSide.AssemblyInfo.cs
+/TestAuthCodePKCEServerSide/obj/Release/net8.0/TestAuthCodePKCEServerSide.AssemblyInfoInputs.cache
