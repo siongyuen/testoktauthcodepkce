@@ -1,6 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using Newtonsoft.Json;
+using System.Runtime.Caching; // Add this for MemoryCache
 
 namespace AuthCodePKCEServerSide
 {
@@ -11,11 +12,14 @@ namespace AuthCodePKCEServerSide
 
     public class CustomTokenValidator : ICustomTokenValidator
     {
+        private static readonly MemoryCache JwksCache = MemoryCache.Default;
+        private static readonly TimeSpan CacheDuration = TimeSpan.FromHours(1);
+
         public async Task<bool> ValidateToken(string token, string oktaDomain)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-     
-            var jsonWebKeySet = GetJsonWebKeySetAsync(oktaDomain).Result; // Implement this to get JWKS from Okta
+
+            var jsonWebKeySet = await GetJsonWebKeySetAsync(oktaDomain); // Use await here
             var parameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
@@ -36,8 +40,15 @@ namespace AuthCodePKCEServerSide
                 return false;
             }
         }
+
         private async Task<JsonWebKeySet> GetJsonWebKeySetAsync(string oktaDomain)
         {
+            var cacheKey = $"JWKS-{oktaDomain}";
+            if (JwksCache[cacheKey] is JsonWebKeySet cachedJwks && cachedJwks != null)
+            {
+                return cachedJwks;
+            }
+
             var httpClient = new HttpClient();
             var jwksUri = $"{oktaDomain}/oauth2/default/v1/keys";
             var response = await httpClient.GetAsync(jwksUri);
@@ -46,9 +57,9 @@ namespace AuthCodePKCEServerSide
             var jsonResponse = await response.Content.ReadAsStringAsync();
             var jsonWebKeySet = new JsonWebKeySet(jsonResponse);
 
+            JwksCache.Set(cacheKey, jsonWebKeySet, DateTimeOffset.Now.Add(CacheDuration));
+
             return jsonWebKeySet;
         }
-        
-    }   
-
+    }
 }

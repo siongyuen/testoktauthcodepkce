@@ -46,3 +46,6 @@ bin/
 /TestOktaPKCE/obj/Debug/TestOktaPKCEClientSide.csproj.GenerateResource.cache
 /TestAuthCodePKCEServerSide/obj/Release/net8.0/TestAuthCodePKCEServerSide.AssemblyInfo.cs
 /TestAuthCodePKCEServerSide/obj/Release/net8.0/TestAuthCodePKCEServerSide.AssemblyInfoInputs.cache
+/AuthCodePKCEServerSide/obj/Debug/net8.0/AuthCodePKCEServerSide.csproj.AssemblyReference.cache
+/AuthCodePKCEServerSide/obj/Debug/net8.0/AuthCodePKCEServerSide.csproj.FileListAbsolute.txt
+/AuthCodePKCEServerSide/bin/Debug/net8.0/AuthCodePKCEServerSide.deps.json
