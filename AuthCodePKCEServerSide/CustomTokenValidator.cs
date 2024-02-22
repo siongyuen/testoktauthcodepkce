@@ -19,7 +19,7 @@ namespace AuthCodePKCEServerSide
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            var jsonWebKeySet = await GetJsonWebKeySetAsync(oktaDomain); // Use await here
+            var jsonWebKeySet = await GetJsonWebKeySetAsync(token,oktaDomain); // Use await here
             var parameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
@@ -41,9 +41,21 @@ namespace AuthCodePKCEServerSide
             }
         }
 
-        private async Task<JsonWebKeySet> GetJsonWebKeySetAsync(string oktaDomain)
+        private async Task<JsonWebKeySet> GetJsonWebKeySetAsync(string token, string oktaDomain)
         {
-            var cacheKey = $"JWKS-{oktaDomain}";
+            // Decode the token to extract the user ID (or sub claim)
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadJwtToken(token);
+            var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+
+            // If unable to extract user ID, use a default or generic key
+            if (string.IsNullOrEmpty(userId))
+            {
+                userId = "generic";
+            }
+
+            var cacheKey = $"JWKS-{oktaDomain}-{userId}";
+
             if (JwksCache[cacheKey] is JsonWebKeySet cachedJwks && cachedJwks != null)
             {
                 return cachedJwks;
@@ -61,5 +73,6 @@ namespace AuthCodePKCEServerSide
 
             return jsonWebKeySet;
         }
+
     }
 }
