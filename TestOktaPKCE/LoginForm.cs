@@ -28,6 +28,7 @@ namespace TestOktaPKCE
         private const string ClientId = "0oaefdvlfqiav6snB5d7"; // Replace with your client ID
         private static readonly HttpClient httpClient = new HttpClient();
         private string _accessToken;
+        private string _refreshToken;
         
 
         public LoginForm()
@@ -71,8 +72,10 @@ namespace TestOktaPKCE
 
 
 
-                    _accessToken = await SendCodeToServerAsync("https://localhost:7064/exchange-code", code, _codeVerifier);
-
+                    string tokenResponseInString = await SendCodeToServerAsync("https://localhost:7064/exchange-code", code, _codeVerifier);
+                    var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(tokenResponseInString);
+                    _refreshToken = tokenResponse.RefreshToken;
+                    _accessToken = tokenResponse.AccessToken;
                     MessageBox.Show("Access Token Obtain : " + _accessToken);
 
 
@@ -139,9 +142,8 @@ namespace TestOktaPKCE
 
 
             httpClient.DefaultRequestHeaders.Accept.Clear();
-            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(_accessToken);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponse.AccessToken);
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));            
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
 
             // Send the GET request
             HttpResponseMessage response = httpClient.GetAsync("https://localhost:7064/weatherforecast").Result;
@@ -188,8 +190,11 @@ namespace TestOktaPKCE
         }
         private void button3_Click(object sender, EventArgs e)
         {
-            var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(_accessToken);
-            MessageBox.Show(OktaAuthHelper.RefreshAccessTokenAsync(OktaDomain, ClientId, tokenResponse.RefreshToken, RedirectUri).Result.ToString());
+         
+            var response = OktaAuthHelper.RefreshAccessToken(OktaDomain, ClientId, _refreshToken, RedirectUri);
+            response.TryGetValue("access_token", out string accessToken);
+            response.TryGetValue("refresh_token", out _refreshToken);
+            MessageBox.Show($"refreshed access token : {accessToken}");
         }
     }
 
