@@ -13,7 +13,7 @@ namespace AuthCodePKCEServerSide
     public class CustomTokenValidator : ICustomTokenValidator
     {
         private static readonly MemoryCache JwksCache = MemoryCache.Default;
-        private static readonly TimeSpan CacheDuration = TimeSpan.FromHours(1);
+        private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(30);
 
         public async Task<bool> ValidateToken(string token, string oktaDomain)
         {
