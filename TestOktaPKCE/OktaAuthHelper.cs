@@ -30,6 +30,29 @@ namespace TestOktaPKCE
             return Tuple.Create(codeVerifier, authorizationRequest);
         }
 
-      
+        // Method to refresh the access token
+        public static async Task<Dictionary<string, string>> RefreshAccessTokenAsync(string oktaDomain, string clientId, string refreshToken, string redirect)
+        {
+            var tokenEndpoint = $"{oktaDomain}/oauth2/default/v1/token";
+            var requestContent = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("grant_type", "refresh_token"),
+                new KeyValuePair<string, string>("refresh_token", refreshToken),
+                new KeyValuePair<string, string>("client_id", clientId),
+                new KeyValuePair<string, string>("scope", "offline_access openid profile"),
+                new KeyValuePair<string, string>("redirect", redirect)
+
+            });
+
+            var response = await httpClient.PostAsync(tokenEndpoint, requestContent);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Error while refreshing token.");
+            }
+
+            var jsonContent = await response.Content.ReadAsStringAsync();
+            var tokens = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonContent);
+            return tokens;
+        }
     }
 }
