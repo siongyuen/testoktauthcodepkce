@@ -58,3 +58,7 @@ bin/
 /AuthCodePKCEServerSide/obj/Debug/net8.0/AuthCodePKCEServerSide.MvcApplicationPartsAssemblyInfo.cs
 /AuthCodePKCEServerSide/obj/Debug/net8.0/staticwebassets.build.json
 /TestOktaPKCE/obj/Debug/TestOktaPKCEClientSide.csproj.CoreCompileInputs.cache
+/AuthCodePKCEServerSide/obj/Debug/net8.0/AuthCodePKCEServerSide.csproj.BuildWithSkipAnalyzers
+/AuthCodePKCEServerSide/obj/Debug/net8.0/AuthCodePKCEServerSide.csproj.CopyComplete
+/AuthCodePKCEServerSide/obj/Debug/net8.0/AuthCodePKCEServerSide.AssemblyInfo.cs
+/AuthCodePKCEServerSide/obj/Debug/net8.0/AuthCodePKCEServerSide.AssemblyInfoInputs.cache
