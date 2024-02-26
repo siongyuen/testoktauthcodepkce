@@ -16,12 +16,13 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using System.Web;
+using System.Net.Sockets;
 
 namespace TestOktaPKCE
 {
     public partial class LoginForm : Form
     {
-        private HttpListener httpListener;
+        
         private const string RedirectUri = "http://localhost:12345/callback";
         private string _codeVerifier;
         private const string OktaDomain = "https://dev-95411323.okta.com"; // Replace with your Okta domain
@@ -29,59 +30,27 @@ namespace TestOktaPKCE
         private static readonly HttpClient httpClient = new HttpClient();
         private string _accessToken;
         private string _refreshToken;
-        
+        private HttpAuthenticationListener httpListener;
+
 
         public LoginForm()
         {
             InitializeComponent();
-            StartHttpListener();
+            httpListener = new HttpAuthenticationListener(RedirectUri);
+            httpListener.AccessTokenObtained += HttpListener_AccessTokenObtained;
+            httpListener.Start();            
         }
-
-        private void StartHttpListener()
-        {
-            httpListener = new HttpListener();
-            httpListener.Prefixes.Add(RedirectUri + "/");
-            httpListener.Start();
-            Task.Run(() => ListenForCallback());
-        }
-
-        private async Task ListenForCallback()
-        {
-            while (httpListener.IsListening)
-            {
-                var context = await httpListener.GetContextAsync();
-                var request = context.Request;
-
-
-                if (request.Url.AbsolutePath == "/callback")
-                {
-                    // Extract the code and state from the query string
-                    NameValueCollection query = request.QueryString;
-                    string code = query["code"];
-                    string state = query["state"];
-
-
-                    // Validate the state parameter for CSRF protection
-                    string expectedState = "state-12345"; // Replace with your actual state value
-                    if (state != expectedState)
-                    {
-                        // Handle state mismatch (potential CSRF attack)
-                        Console.WriteLine("State value did not match expected value.");
-                        return;
-                    }
-
-                    string tokenResponseInString = await OktaAuthHelper.SendCodeToServerAsync("https://localhost:7064/exchange-code", code, _codeVerifier);
-                    var tokenResponse = JsonConvert.DeserializeObject<Models.TokenResponse>(tokenResponseInString);
-                    _refreshToken = tokenResponse.RefreshToken;
-                    _accessToken = tokenResponse.AccessToken;
-                    MessageBox.Show("Access Token Obtain : " + _accessToken);
-                }
-            }
-        }
+        
 
         private void LoginForm_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void HttpListener_AccessTokenObtained(object sender, string accessToken)
+        {
+            MessageBox.Show("Access Token Obtain : " + accessToken);
+            // Update UI or internal state as necessary
         }
 
         private async void button1_Click(object sender, EventArgs e)
@@ -89,7 +58,7 @@ namespace TestOktaPKCE
             try
             {
                 var result = OktaAuthHelper.StartAuthorization(OktaDomain, ClientId, RedirectUri);
-                _codeVerifier = result.Item1;
+                httpListener.SetCodeVerifier(result.Item1);                
                 var authorizationRequest = result.Item2;
                 System.Diagnostics.Process.Start(authorizationRequest);
             }
