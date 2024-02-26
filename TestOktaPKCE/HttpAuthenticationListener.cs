@@ -13,11 +13,15 @@ namespace TestOktaPKCE
         private readonly string redirectUri;
         private string _codeVerifier;
         public event EventHandler<string> AccessTokenObtained;
+        private string _expectedState;
 
         public void SetCodeVerifier(string codeVerifier)
         {
             _codeVerifier = codeVerifier;
         }
+
+        public void SetExpectedState(string state)
+        { _expectedState = state; }
 
         public HttpAuthenticationListener(string redirectUri)
         {
@@ -53,8 +57,8 @@ namespace TestOktaPKCE
             string code = query["code"];
             string state = query["state"];
 
-            string expectedState = "state-12345"; // Replace with your actual state value
-            if (state != expectedState)
+            
+            if (state != _expectedState)
             {
                 Console.WriteLine("State value did not match expected value.");
                 return;

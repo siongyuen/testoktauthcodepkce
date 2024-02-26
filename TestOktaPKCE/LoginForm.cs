@@ -57,8 +57,10 @@ namespace TestOktaPKCE
         {
             try
             {
-                var result = OktaAuthHelper.StartAuthorization(OktaDomain, ClientId, RedirectUri);
-                httpListener.SetCodeVerifier(result.Item1);                
+                string state = "random";
+                var result = OktaAuthHelper.StartAuthorization(OktaDomain, ClientId, RedirectUri, state);
+                httpListener.SetCodeVerifier(result.Item1);
+                httpListener.SetExpectedState(state);
                 var authorizationRequest = result.Item2;
                 System.Diagnostics.Process.Start(authorizationRequest);
             }

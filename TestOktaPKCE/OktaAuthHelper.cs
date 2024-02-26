@@ -13,7 +13,7 @@ namespace TestOktaPKCE
         private const string Scope = "openid offline_access"; // Include offline_access to request a refresh token
         private static readonly HttpClient httpClient = new HttpClient();
 
-        public static Tuple<string, string> StartAuthorization(string oktaDomain, string clientId, string redirectUri)
+        public static Tuple<string, string> StartAuthorization(string oktaDomain, string clientId, string redirectUri, string state)
         {
             var codeVerifier = PKCEHelper.GenerateCodeVerifier();
             var codeChallenge = PKCEHelper.GenerateCodeChallenge(codeVerifier);
@@ -23,7 +23,7 @@ namespace TestOktaPKCE
                                        "&response_type=code" +
                                        $"&scope={HttpUtility.UrlEncode(Scope)}" +
                                        $"&redirect_uri={HttpUtility.UrlEncode(redirectUri)}" +
-                                       "&state=state-12345" + // Generate a secure random state
+                                       $"&state={state}" + // Generate a secure random state
                                        "&code_challenge_method=S256" +
                                        $"&code_challenge={codeChallenge}";
 
