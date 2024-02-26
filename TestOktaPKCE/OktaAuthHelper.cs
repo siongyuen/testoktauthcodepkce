@@ -31,7 +31,7 @@ namespace TestOktaPKCE
         }
 
         // Method to refresh the access token
-        public static Dictionary<string, string> RefreshAccessToken(string oktaDomain, string clientId, string refreshToken, string redirect)
+        public static async Task<Dictionary<string, string>> RefreshAccessToken(string oktaDomain, string clientId, string refreshToken, string redirect)
         {
             var tokenEndpoint = $"{oktaDomain}/oauth2/default/v1/token";
             var requestContent = new FormUrlEncodedContent(new[]
@@ -44,15 +44,32 @@ namespace TestOktaPKCE
 
             });
 
-            var response = httpClient.PostAsync(tokenEndpoint, requestContent).Result;
+            var response = await httpClient.PostAsync(tokenEndpoint, requestContent).ConfigureAwait(false);
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception("Error while refreshing token.");
             }
 
-            var jsonContent = response.Content.ReadAsStringAsync().Result;
+            var jsonContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             var tokens = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonContent);
             return tokens;
+        }
+
+        public static async Task<string> SendCodeToServerAsync(string serverEndpoint, string code, string codeVerifier)
+        {
+            var content = new FormUrlEncodedContent(new[]
+            {
+        new KeyValuePair<string, string>("Code", code),
+        new KeyValuePair<string, string>("CodeVerifier", codeVerifier)
+    });
+
+            var response = await httpClient.PostAsync(serverEndpoint, content);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Error while sending code to server.");
+            }
+
+            return await response.Content.ReadAsStringAsync();
         }
     }
 }

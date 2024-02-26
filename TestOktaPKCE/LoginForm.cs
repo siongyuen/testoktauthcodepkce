@@ -70,15 +70,11 @@ namespace TestOktaPKCE
                         return;
                     }
 
-
-
-                    string tokenResponseInString = await SendCodeToServerAsync("https://localhost:7064/exchange-code", code, _codeVerifier);
-                    var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(tokenResponseInString);
+                    string tokenResponseInString = await OktaAuthHelper.SendCodeToServerAsync("https://localhost:7064/exchange-code", code, _codeVerifier);
+                    var tokenResponse = JsonConvert.DeserializeObject<Models.TokenResponse>(tokenResponseInString);
                     _refreshToken = tokenResponse.RefreshToken;
                     _accessToken = tokenResponse.AccessToken;
                     MessageBox.Show("Access Token Obtain : " + _accessToken);
-
-
                 }
             }
         }
@@ -120,37 +116,20 @@ namespace TestOktaPKCE
 
 
 
-        public async Task<string> SendCodeToServerAsync(string serverEndpoint, string code, string codeVerifier)
+    
+
+        public IEnumerable<Models.WeatherForecast> GetWeatherForecast()
         {
-            var content = new FormUrlEncodedContent(new[]
-            {
-        new KeyValuePair<string, string>("Code", code),
-        new KeyValuePair<string, string>("CodeVerifier", codeVerifier)
-    });
-
-            var response = await httpClient.PostAsync(serverEndpoint, content);
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception("Error while sending code to server.");
-            }
-
-            return await response.Content.ReadAsStringAsync();
-        }
-
-        public IEnumerable<WeatherForecast> GetWeatherForecast()
-        {
-
 
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));            
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
-
             // Send the GET request
             HttpResponseMessage response = httpClient.GetAsync("https://localhost:7064/weatherforecast").Result;
             if (response.IsSuccessStatusCode)
             {
                 string json = response.Content.ReadAsStringAsync().Result;
-                var forecasts = JsonConvert.DeserializeObject<IEnumerable<WeatherForecast>>(json); // Assuming WeatherForecast is your model class
+                var forecasts = JsonConvert.DeserializeObject<IEnumerable<Models.WeatherForecast>>(json); // Assuming WeatherForecast is your model class
                                                                                                    // Process the data
                 return forecasts;
             }
@@ -160,38 +139,11 @@ namespace TestOktaPKCE
             }
            ;
         }
-        public class WeatherForecast
-        {
-            public DateTime Date { get; set; }
-
-            public int TemperatureC { get; set; }
-
-            public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-
-            public string Summary { get; set; }
-        }
-
-
-        public class TokenResponse
-        {
-            [JsonProperty("token_type")]
-            public string TokenType { get; set; }
-
-            [JsonProperty("expires_in")]
-            public int ExpiresIn { get; set; }
-
-            [JsonProperty("access_token")]
-            public string AccessToken { get; set; }
-
-            [JsonProperty("refresh_token")]
-            public string RefreshToken { get; set; } // Added property for refresh token
-
-            // Include other properties as needed
-        }
+       
         private void button3_Click(object sender, EventArgs e)
         {
          
-            var response = OktaAuthHelper.RefreshAccessToken(OktaDomain, ClientId, _refreshToken, RedirectUri);
+            var response = OktaAuthHelper.RefreshAccessToken(OktaDomain, ClientId, _refreshToken, RedirectUri).Result;
             response.TryGetValue("access_token", out string accessToken);
             response.TryGetValue("refresh_token", out _refreshToken);
             MessageBox.Show($"refreshed access token : {accessToken}");

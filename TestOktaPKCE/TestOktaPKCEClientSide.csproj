@@ -103,6 +103,7 @@
     <Compile Include="LoginForm.Designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models.cs" />
     <Compile Include="OktaAuthHelper.cs" />
     <Compile Include="PKCEHelper.cs" />
     <Compile Include="Program.cs" />

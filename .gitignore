@@ -49,3 +49,12 @@ bin/
 /AuthCodePKCEServerSide/obj/Debug/net8.0/AuthCodePKCEServerSide.csproj.AssemblyReference.cache
 /AuthCodePKCEServerSide/obj/Debug/net8.0/AuthCodePKCEServerSide.csproj.FileListAbsolute.txt
 /AuthCodePKCEServerSide/bin/Debug/net8.0/AuthCodePKCEServerSide.deps.json
+/AuthCodePKCEServerSide/obj/Debug/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+/AuthCodePKCEServerSide/obj/Debug/net8.0/staticwebassets/msbuild.build.AuthCodePKCEServerSide.props
+/AuthCodePKCEServerSide/obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.AuthCodePKCEServerSide.props
+/AuthCodePKCEServerSide/obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.AuthCodePKCEServerSide.props
+/AuthCodePKCEServerSide/obj/Debug/net8.0/AuthCodePKCEServerSide.GlobalUsings.g.cs
+/AuthCodePKCEServerSide/obj/Debug/net8.0/AuthCodePKCEServerSide.MvcApplicationPartsAssemblyInfo.cache
+/AuthCodePKCEServerSide/obj/Debug/net8.0/AuthCodePKCEServerSide.MvcApplicationPartsAssemblyInfo.cs
+/AuthCodePKCEServerSide/obj/Debug/net8.0/staticwebassets.build.json
+/TestOktaPKCE/obj/Debug/TestOktaPKCEClientSide.csproj.CoreCompileInputs.cache
