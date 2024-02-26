@@ -62,3 +62,5 @@ bin/
 /AuthCodePKCEServerSide/obj/Debug/net8.0/AuthCodePKCEServerSide.csproj.CopyComplete
 /AuthCodePKCEServerSide/obj/Debug/net8.0/AuthCodePKCEServerSide.AssemblyInfo.cs
 /AuthCodePKCEServerSide/obj/Debug/net8.0/AuthCodePKCEServerSide.AssemblyInfoInputs.cache
+**/bin/*
+**/obj/*
