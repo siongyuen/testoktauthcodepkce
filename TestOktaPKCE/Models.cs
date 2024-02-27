@@ -38,7 +38,7 @@ namespace TestOktaPKCE
 
             // Include other properties as needed
         }
-        public interface IIdpConfiguration
+        public interface IIdpAdapter
         {
             string Domain { get; }
             string ClientId { get; }

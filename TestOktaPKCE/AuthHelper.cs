@@ -12,12 +12,12 @@ namespace TestOktaPKCE
     {
         private static readonly HttpClient httpClient = new HttpClient();
 
-        public static Tuple<string, string> StartAuthorization(Models.IIdpConfiguration idpConfig, string state)
+        public static Tuple<string, string> StartAuthorization(Models.IIdpAdapter idpConfig, string state)
         {
             return idpConfig.StartAuthorization(state);
         }
 
-        public static async Task<Dictionary<string, string>> RefreshAccessToken(Models.IIdpConfiguration idpConfig, string refreshToken)
+        public static async Task<Dictionary<string, string>> RefreshAccessToken(Models.IIdpAdapter idpConfig, string refreshToken)
         {
             return await idpConfig.RefreshAccessToken(refreshToken, httpClient ).ConfigureAwait(false);
         }

@@ -11,7 +11,7 @@ using static TestOktaPKCE.Models;
 namespace TestOktaPKCE
 {
     
-public class OktaConfiguration : IIdpConfiguration
+public class OktaConfiguration : IIdpAdapter
     {
         public string Domain { get; private set; }
         public string ClientId { get; private set; }
