@@ -37,8 +37,7 @@ namespace AuthCodePKCEServerSide.Controllers
                 var tokenResponse = await response.Content.ReadAsStringAsync();
                 return Ok(tokenResponse);
             }
-        }
-   
+        }  
 
    
     }

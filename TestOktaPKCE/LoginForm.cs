@@ -117,7 +117,7 @@ namespace TestOktaPKCE
             try
             {
                 string state = "random";
-                var oktaConfig = new AzureAdapter ("https://siongyuenhotmail.onmicrosoft.com", "0a2a1325-4bc0-4b4c-bea6-1af3fe408392", RedirectUri ,"81180712-5369-494f-9d7f-514eccf5e9f8");
+                var oktaConfig = new AzureAdapter ( "0a2a1325-4bc0-4b4c-bea6-1af3fe408392", RedirectUri ,"81180712-5369-494f-9d7f-514eccf5e9f8");
                 var result = AuthHelper.StartAuthorization(oktaConfig, state);
                 httpListener.SetCodeVerifier(result.Item1);
                 httpListener.SetExpectedState(state);

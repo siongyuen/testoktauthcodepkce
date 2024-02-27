@@ -20,9 +20,8 @@ public class AzureAdapter : IIdpAdapter
         public string TenantId { get; private set; }
 
 
-        public AzureAdapter(string domain, string clientId, string redirectUri, string tenantId)
-        {
-            Domain = domain;
+        public AzureAdapter( string clientId, string redirectUri, string tenantId)       {
+    
             ClientId = clientId;
             RedirectUri = redirectUri;
             TenantId = tenantId;

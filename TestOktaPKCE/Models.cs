@@ -40,7 +40,7 @@ namespace TestOktaPKCE
         }
         public interface IIdpAdapter
         {
-            string Domain { get; }
+            
             string ClientId { get; }
             string RedirectUri { get; }
 
