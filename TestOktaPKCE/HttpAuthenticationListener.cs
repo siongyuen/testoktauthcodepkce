@@ -64,7 +64,7 @@ namespace TestOktaPKCE
                 return;
             }
 
-            string tokenResponseInString = await OktaAuthHelper.SendCodeToServerAsync("https://localhost:7064/exchange-code", code, _codeVerifier);
+            string tokenResponseInString = await AuthHelper.SendCodeToServerAsync("https://localhost:7064/exchange-code", code, _codeVerifier);
             var tokenResponse = JsonConvert.DeserializeObject<Models.TokenResponse>(tokenResponseInString);
 
             AccessTokenObtained?.Invoke(this, tokenResponse.AccessToken);

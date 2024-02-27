@@ -1,32 +1,21 @@
 ﻿
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Net;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-using System.Text;
-using System.Net.Http.Headers;
-using System.Security.Cryptography;
-using System.Text.Json.Serialization;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Linq;
-using System.Web;
-using System.Net.Sockets;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Windows.Forms;
 
 namespace TestOktaPKCE
 {
     public partial class LoginForm : Form
     {
         
-        private const string RedirectUri = "http://localhost:12345/callback";
+        private const string OktaRedirectUri = "http://localhost:12345/callback";
         private string _codeVerifier;
         private const string OktaDomain = "https://dev-95411323.okta.com"; // Replace with your Okta domain
-        private const string ClientId = "0oaefdvlfqiav6snB5d7"; // Replace with your client ID
+        private const string OktaClientId = "0oaefdvlfqiav6snB5d7"; // Replace with your client ID
         private static readonly HttpClient httpClient = new HttpClient();
         private string _accessToken;
         private string _refreshToken;
@@ -36,7 +25,7 @@ namespace TestOktaPKCE
         public LoginForm()
         {
             InitializeComponent();
-            httpListener = new HttpAuthenticationListener(RedirectUri);
+            httpListener = new HttpAuthenticationListener(OktaRedirectUri);
             httpListener.AccessTokenObtained += HttpListener_AccessTokenObtained;
             httpListener.Start();            
         }
@@ -50,6 +39,7 @@ namespace TestOktaPKCE
         private void HttpListener_AccessTokenObtained(object sender, string accessToken)
         {
             MessageBox.Show("Access Token Obtain : " + accessToken);
+            _accessToken = accessToken;
             // Update UI or internal state as necessary
         }
 
@@ -58,7 +48,8 @@ namespace TestOktaPKCE
             try
             {
                 string state = "random";
-                var result = OktaAuthHelper.StartAuthorization(OktaDomain, ClientId, RedirectUri, state);
+                var oktaConfig = new OktaConfiguration(OktaDomain, OktaClientId, OktaRedirectUri);
+                var result = AuthHelper.StartAuthorization(oktaConfig, state);
                 httpListener.SetCodeVerifier(result.Item1);
                 httpListener.SetExpectedState(state);
                 var authorizationRequest = result.Item2;
@@ -86,8 +77,7 @@ namespace TestOktaPKCE
         }
 
 
-
-    
+           
 
         public IEnumerable<Models.WeatherForecast> GetWeatherForecast()
         {
@@ -113,8 +103,8 @@ namespace TestOktaPKCE
        
         private void button3_Click(object sender, EventArgs e)
         {
-         
-            var response = OktaAuthHelper.RefreshAccessToken(OktaDomain, ClientId, _refreshToken, RedirectUri).Result;
+            var oktaConfig = new OktaConfiguration(OktaDomain, OktaClientId, OktaRedirectUri);
+            var response = AuthHelper.RefreshAccessToken(oktaConfig, _refreshToken).Result;
             response.TryGetValue("access_token", out string accessToken);
             response.TryGetValue("refresh_token", out _refreshToken);
             MessageBox.Show($"refreshed access token : {accessToken}");

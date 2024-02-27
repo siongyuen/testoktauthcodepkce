@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,5 +38,15 @@ namespace TestOktaPKCE
 
             // Include other properties as needed
         }
+        public interface IIdpConfiguration
+        {
+            string Domain { get; }
+            string ClientId { get; }
+            string RedirectUri { get; }
+
+            Tuple<string, string> StartAuthorization(string state);
+            Task<Dictionary<string, string>> RefreshAccessToken(string refreshToken, HttpClient httpClient);
+        }
+
     }
 }

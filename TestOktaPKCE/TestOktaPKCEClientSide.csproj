@@ -105,7 +105,8 @@
       <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Models.cs" />
-    <Compile Include="OktaAuthHelper.cs" />
+    <Compile Include="AuthHelper.cs" />
+    <Compile Include="OktaConfiguration.cs" />
     <Compile Include="PKCEHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
