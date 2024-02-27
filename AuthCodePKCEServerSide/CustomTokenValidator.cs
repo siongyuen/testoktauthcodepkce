@@ -7,25 +7,59 @@ namespace AuthCodePKCEServerSide
 {
     public interface ICustomTokenValidator
     {
-        Task<bool> ValidateToken(string token, string oktaDomain);
+        Task<bool> ValidateToken(string token, IIdpConfiguration idpConfiguration);
     }
 
+    public interface IIdpConfiguration
+    {
+        string Issuer { get; }
+        string JwksUri { get; }
+        // Add other necessary configuration parameters here
+    }
+
+    public class OktaConfiguration : IIdpConfiguration
+    {
+        public string Issuer { get; private set; }
+        public string JwksUri { get; private set; }
+
+        public OktaConfiguration(string domain)
+        {
+            Issuer = $"{domain}/oauth2/default";
+            JwksUri = $"{domain}/oauth2/default/v1/keys";
+        }
+    }
+
+    public class AzureAdConfiguration : IIdpConfiguration
+    {
+        public string Issuer { get; private set; }
+        public string JwksUri { get; private set; }
+
+        public AzureAdConfiguration(string tenantId)
+        {
+            Issuer = $"https://login.microsoftonline.com/{tenantId}/v2.0";
+            JwksUri = $"https://login.microsoftonline.com/{tenantId}/discovery/v2.0/keys";
+        }
+    }
     public class CustomTokenValidator : ICustomTokenValidator
     {
         private static readonly MemoryCache JwksCache = MemoryCache.Default;
         private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(30);
+        private  IIdpConfiguration? _idpConfiguration;
 
-        public async Task<bool> ValidateToken(string token, string oktaDomain)
+
+
+        public async Task<bool> ValidateToken(string token, IIdpConfiguration idpConfiguration)
         {
+            _idpConfiguration = idpConfiguration;
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            var jsonWebKeySet = await GetJsonWebKeySetAsync(token,oktaDomain); // Use await here
+            var jsonWebKeySet = await GetJsonWebKeySetAsync(token); // Use await here
             var parameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKeys = jsonWebKeySet.Keys,
                 ValidateIssuer = true,
-                ValidIssuer = $"{oktaDomain}/oauth2/default",
+                ValidIssuer = _idpConfiguration.Issuer ,
                 ValidateAudience = false,
                 ValidateLifetime = true
             };
@@ -41,7 +75,7 @@ namespace AuthCodePKCEServerSide
             }
         }
 
-        private async Task<JsonWebKeySet> GetJsonWebKeySetAsync(string token, string oktaDomain)
+        private async Task<JsonWebKeySet> GetJsonWebKeySetAsync(string token)
         {
             // Decode the token to extract the user ID (or sub claim)
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -54,7 +88,7 @@ namespace AuthCodePKCEServerSide
                 userId = "generic";
             }
 
-            var cacheKey = $"JWKS-{oktaDomain}-{userId}";
+            var cacheKey = $"JWKS-{_idpConfiguration.Issuer}-{userId}";
 
             if (JwksCache[cacheKey] is JsonWebKeySet cachedJwks && cachedJwks != null)
             {
@@ -62,7 +96,7 @@ namespace AuthCodePKCEServerSide
             }
 
             var httpClient = new HttpClient();
-            var jwksUri = $"{oktaDomain}/oauth2/default/v1/keys";
+            var jwksUri = _idpConfiguration.JwksUri ;
             var response = await httpClient.GetAsync(jwksUri);
             response.EnsureSuccessStatusCode();
 
