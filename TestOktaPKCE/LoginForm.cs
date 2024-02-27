@@ -12,7 +12,7 @@ namespace TestOktaPKCE
     public partial class LoginForm : Form
     {
         
-        private const string OktaRedirectUri = "http://localhost:12345/callback";
+        private const string RedirectUri = "http://localhost:12345/callback";
         private string _codeVerifier;
         private const string OktaDomain = "https://dev-95411323.okta.com"; // Replace with your Okta domain
         private const string OktaClientId = "0oaefdvlfqiav6snB5d7"; // Replace with your client ID
@@ -25,7 +25,7 @@ namespace TestOktaPKCE
         public LoginForm()
         {
             InitializeComponent();
-            httpListener = new HttpAuthenticationListener(OktaRedirectUri);
+            httpListener = new HttpAuthenticationListener(RedirectUri);
             httpListener.TokenResponseObtained += HttpListener_AccessTokenObtained;
             httpListener.Start();            
         }
@@ -50,7 +50,7 @@ namespace TestOktaPKCE
             try
             {
                 string state = "random";
-                var oktaConfig = new OktaConfiguration(OktaDomain, OktaClientId, OktaRedirectUri);
+                var oktaConfig = new OktaAdapter(OktaDomain, OktaClientId, RedirectUri);
                 var result = AuthHelper.StartAuthorization(oktaConfig, state);
                 httpListener.SetCodeVerifier(result.Item1);
                 httpListener.SetExpectedState(state);
@@ -105,11 +105,29 @@ namespace TestOktaPKCE
        
         private void button3_Click(object sender, EventArgs e)
         {
-            var oktaConfig = new OktaConfiguration(OktaDomain, OktaClientId, OktaRedirectUri);
+            var oktaConfig = new OktaAdapter(OktaDomain, OktaClientId, RedirectUri);
             var response = AuthHelper.RefreshAccessToken(oktaConfig, _refreshToken).Result;
             response.TryGetValue("access_token", out string accessToken);
             response.TryGetValue("refresh_token", out _refreshToken);
             MessageBox.Show($"refreshed access token : {accessToken}");
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string state = "random";
+                var oktaConfig = new AzureAdapter ("https://siongyuenhotmail.onmicrosoft.com", "0a2a1325-4bc0-4b4c-bea6-1af3fe408392", RedirectUri ,"81180712-5369-494f-9d7f-514eccf5e9f8");
+                var result = AuthHelper.StartAuthorization(oktaConfig, state);
+                httpListener.SetCodeVerifier(result.Item1);
+                httpListener.SetExpectedState(state);
+                var authorizationRequest = result.Item2;
+                System.Diagnostics.Process.Start(authorizationRequest);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
         }
     }
 

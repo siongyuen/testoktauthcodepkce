@@ -106,7 +106,8 @@
     </Compile>
     <Compile Include="Models.cs" />
     <Compile Include="AuthHelper.cs" />
-    <Compile Include="OktaConfiguration.cs" />
+    <Compile Include="AzureAdapter.cs" />
+    <Compile Include="OktaAdapter.cs" />
     <Compile Include="PKCEHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

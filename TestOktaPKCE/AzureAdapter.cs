@@ -11,17 +11,21 @@ using static TestOktaPKCE.Models;
 namespace TestOktaPKCE
 {
     
-public class OktaConfiguration : IIdpAdapter
+public class AzureAdapter : IIdpAdapter
     {
         public string Domain { get; private set; }
         public string ClientId { get; private set; }
         public string RedirectUri { get; private set; }
 
-        public OktaConfiguration(string domain, string clientId, string redirectUri)
+        public string TenantId { get; private set; }
+
+
+        public AzureAdapter(string domain, string clientId, string redirectUri, string tenantId)
         {
             Domain = domain;
             ClientId = clientId;
             RedirectUri = redirectUri;
+            TenantId = tenantId;
         }
 
         public Tuple<string, string> StartAuthorization(string state)
@@ -29,7 +33,7 @@ public class OktaConfiguration : IIdpAdapter
             var codeVerifier = PKCEHelper.GenerateCodeVerifier();
             var codeChallenge = PKCEHelper.GenerateCodeChallenge(codeVerifier);
 
-            var authorizationRequest = $"{Domain}/oauth2/default/v1/authorize?" +
+            var authorizationRequest = $"https://login.microsoftonline.com/{TenantId}/oauth2/v2.0/authorize?" +
                                        $"client_id={ClientId}" +
                                        "&response_type=code" +
                                        $"&scope={HttpUtility.UrlEncode("openid offline_access")}" +
@@ -43,7 +47,7 @@ public class OktaConfiguration : IIdpAdapter
 
         public async Task<Dictionary<string, string>> RefreshAccessToken(string refreshToken, HttpClient httpClient)
         {
-            var tokenEndpoint = $"{Domain}/oauth2/default/v1/token";
+            var tokenEndpoint = $"https://login.microsoftonline.com/{TenantId}/oauth2/v2.0/token";
             var requestContent = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("grant_type", "refresh_token"),
