@@ -19,7 +19,7 @@ namespace TestOktaPKCE
 
         public static async Task<Dictionary<string, string>> RefreshAccessToken(Models.IIdpConfiguration idpConfig, string refreshToken)
         {
-            return await idpConfig.RefreshAccessToken(refreshToken, httpClient );
+            return await idpConfig.RefreshAccessToken(refreshToken, httpClient ).ConfigureAwait(false);
         }
 
         public static async Task<string> SendCodeToServerAsync(string serverEndpoint, string code, string codeVerifier)

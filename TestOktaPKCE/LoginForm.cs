@@ -26,7 +26,7 @@ namespace TestOktaPKCE
         {
             InitializeComponent();
             httpListener = new HttpAuthenticationListener(OktaRedirectUri);
-            httpListener.AccessTokenObtained += HttpListener_AccessTokenObtained;
+            httpListener.TokenResponseObtained += HttpListener_AccessTokenObtained;
             httpListener.Start();            
         }
         
@@ -36,10 +36,12 @@ namespace TestOktaPKCE
 
         }
 
-        private void HttpListener_AccessTokenObtained(object sender, string accessToken)
+        private void HttpListener_AccessTokenObtained(object sender, Models.TokenResponse  tokenResponse)
         {
-            MessageBox.Show("Access Token Obtain : " + accessToken);
-            _accessToken = accessToken;
+            MessageBox.Show("Access Token Obtain : " + tokenResponse.AccessToken);
+            _accessToken = tokenResponse.AccessToken ;
+            _refreshToken = tokenResponse.RefreshToken;
+
             // Update UI or internal state as necessary
         }
 

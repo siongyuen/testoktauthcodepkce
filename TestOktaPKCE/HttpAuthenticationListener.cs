@@ -12,7 +12,7 @@ namespace TestOktaPKCE
         private HttpListener httpListener;
         private readonly string redirectUri;
         private string _codeVerifier;
-        public event EventHandler<string> AccessTokenObtained;
+        public event EventHandler<Models.TokenResponse > TokenResponseObtained;
         private string _expectedState;
 
         public void SetCodeVerifier(string codeVerifier)
@@ -67,7 +67,7 @@ namespace TestOktaPKCE
             string tokenResponseInString = await AuthHelper.SendCodeToServerAsync("https://localhost:7064/exchange-code", code, _codeVerifier);
             var tokenResponse = JsonConvert.DeserializeObject<Models.TokenResponse>(tokenResponseInString);
 
-            AccessTokenObtained?.Invoke(this, tokenResponse.AccessToken);
+            TokenResponseObtained?.Invoke(this, tokenResponse);
         }
     }
 }
