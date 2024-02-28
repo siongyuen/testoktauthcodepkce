@@ -25,7 +25,7 @@ namespace AuthCodePKCEServerSide
     {
         private static readonly MemoryCache JwksCache = MemoryCache.Default;
         private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(30);
-        private  IdpSettings? _idpSetting;
+        private  IdpSettings _idpSetting;
 
 
 
