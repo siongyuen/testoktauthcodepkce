@@ -11,6 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<AuthCodePKCEServerSide.ICustomTokenValidator, AuthCodePKCEServerSide.CustomTokenValidator>();
+builder.Services.Configure <IdpSettings >(builder.Configuration.GetSection("Idp"));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
         {
@@ -25,7 +26,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     context.Token = token;
                     var oktaDomain = "https://dev-95411323.okta.com";
                     var oktaConfig = new OktaConfiguration(oktaDomain);
-
 
                     var isValidToken = token != null && await tokenValidator.ValidateToken(token, oktaConfig);
 
