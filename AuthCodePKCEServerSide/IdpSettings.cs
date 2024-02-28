@@ -7,6 +7,8 @@
         public string RedirectUrl { get; set; } = string.Empty;
         public string Issuer {  get; set; } = string.Empty;
         public string JwksUri { get; set; } = string.Empty;
+        public string ExchangeCodeScope {  get; set; } = string.Empty;
+
 
     }
 }

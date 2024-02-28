@@ -19,7 +19,7 @@ namespace TestOktaPKCE
         private static readonly HttpClient httpClient = new HttpClient();
         private string _accessToken;
         private string _refreshToken;
-        private HttpAuthenticationListener httpListener;
+        private readonly HttpAuthenticationListener httpListener;
 
 
         public LoginForm()
@@ -117,8 +117,8 @@ namespace TestOktaPKCE
             try
             {
                 string state = "random";
-                var oktaConfig = new AzureAdapter ( "0a2a1325-4bc0-4b4c-bea6-1af3fe408392", RedirectUri ,"81180712-5369-494f-9d7f-514eccf5e9f8");
-                var result = AuthHelper.StartAuthorization(oktaConfig, state);
+                var azureAdapter = new AzureAdapter ( "0a2a1325-4bc0-4b4c-bea6-1af3fe408392", RedirectUri ,"81180712-5369-494f-9d7f-514eccf5e9f8");
+                var result = AuthHelper.StartAuthorization(azureAdapter, state);
                 httpListener.SetCodeVerifier(result.Item1);
                 httpListener.SetExpectedState(state);
                 var authorizationRequest = result.Item2;

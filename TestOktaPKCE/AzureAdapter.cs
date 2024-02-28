@@ -35,7 +35,7 @@ public class AzureAdapter : IIdpAdapter
             var authorizationRequest = $"https://login.microsoftonline.com/{TenantId}/oauth2/v2.0/authorize?" +
                                        $"client_id={ClientId}" +
                                        "&response_type=code" +
-                                       $"&scope={HttpUtility.UrlEncode("openid offline_access")}" +
+                                       $"&scope={HttpUtility.UrlEncode("openid offline_access https://graph.microsoft.com/mail.read")}" +
                                        $"&redirect_uri={HttpUtility.UrlEncode(RedirectUri)}" +
                                        $"&state={state}" + // Generate a secure random state
                                        "&code_challenge_method=S256" +

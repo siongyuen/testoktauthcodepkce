@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Options;
+using System.Web;
 
 namespace AuthCodePKCEServerSide.Controllers
 {
@@ -28,10 +29,11 @@ namespace AuthCodePKCEServerSide.Controllers
             new KeyValuePair<string, string>("code", request.Code),
             new KeyValuePair<string, string>("redirect_uri", _idpSettings.RedirectUrl), // Replace with your redirect URI
             new KeyValuePair<string, string>("client_id", clientId),
-            new KeyValuePair<string, string>("code_verifier", request.CodeVerifier)
+            new KeyValuePair<string, string>("code_verifier", request.CodeVerifier),
+            new KeyValuePair<string, string>("scope", HttpUtility.UrlEncode(_idpSettings.ExchangeCodeScope))
         });
 
-                var response = await httpClient.PostAsync(tokenEndpoint, content).ConfigureAwait(false);
+                var response = await httpClient.PostAsync(tokenEndpoint, content);
 
                 if (!response.IsSuccessStatusCode)
                 {

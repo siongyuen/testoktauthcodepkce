@@ -14,7 +14,6 @@ namespace AuthCodePKCEServerSide
     {
         public string Issuer { get; private set; }
         public string JwksUri { get; private set; }
-
         public AzureAdConfiguration(string tenantId)
         {
             Issuer = $"https://login.microsoftonline.com/{tenantId}/v2.0";
