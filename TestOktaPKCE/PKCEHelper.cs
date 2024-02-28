@@ -11,7 +11,7 @@ namespace TestOktaPKCE
 
         public static string GenerateCodeVerifier()
         {
-            return GenerateRandomString(128);
+            return GenerateRandomString(43);
         }
 
         public static string GenerateCodeChallenge(string codeVerifier)
