@@ -7,29 +7,10 @@ namespace AuthCodePKCEServerSide
 {
     public interface ICustomTokenValidator
     {
-        Task<bool> ValidateToken(string token, IIdpConfiguration idpConfiguration);
+        Task<bool> ValidateToken(string token, IdpSettings  idpSettings);
     }
-
-    public interface IIdpConfiguration
-    {
-        string Issuer { get; }
-        string JwksUri { get; }
-        // Add other necessary configuration parameters here
-    }
-
-    public class OktaConfiguration : IIdpConfiguration
-    {
-        public string Issuer { get; private set; }
-        public string JwksUri { get; private set; }
-
-        public OktaConfiguration(string domain)
-        {
-            Issuer = $"{domain}/oauth2/default";
-            JwksUri = $"{domain}/oauth2/default/v1/keys";
-        }
-    }
-
-    public class AzureAdConfiguration : IIdpConfiguration
+           
+    public class AzureAdConfiguration 
     {
         public string Issuer { get; private set; }
         public string JwksUri { get; private set; }
@@ -44,13 +25,13 @@ namespace AuthCodePKCEServerSide
     {
         private static readonly MemoryCache JwksCache = MemoryCache.Default;
         private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(30);
-        private  IIdpConfiguration? _idpConfiguration;
+        private  IdpSettings? _idpSetting;
 
 
 
-        public async Task<bool> ValidateToken(string token, IIdpConfiguration idpConfiguration)
+        public async Task<bool> ValidateToken(string token, IdpSettings idpSetting)
         {
-            _idpConfiguration = idpConfiguration;
+            _idpSetting = idpSetting;
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var jsonWebKeySet = await GetJsonWebKeySetAsync(token); // Use await here
@@ -59,7 +40,7 @@ namespace AuthCodePKCEServerSide
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKeys = jsonWebKeySet.Keys,
                 ValidateIssuer = true,
-                ValidIssuer = _idpConfiguration.Issuer ,
+                ValidIssuer = _idpSetting.Issuer ,
                 ValidateAudience = false,
                 ValidateLifetime = true
             };
@@ -88,7 +69,7 @@ namespace AuthCodePKCEServerSide
                 userId = "generic";
             }
 
-            var cacheKey = $"JWKS-{_idpConfiguration.Issuer}-{userId}";
+            var cacheKey = $"JWKS-{_idpSetting.Issuer}-{userId}";
 
             if (JwksCache[cacheKey] is JsonWebKeySet cachedJwks && cachedJwks != null)
             {
@@ -96,7 +77,7 @@ namespace AuthCodePKCEServerSide
             }
 
             var httpClient = new HttpClient();
-            var jwksUri = _idpConfiguration.JwksUri ;
+            var jwksUri = _idpSetting.JwksUri ;
             var response = await httpClient.GetAsync(jwksUri);
             response.EnsureSuccessStatusCode();
 

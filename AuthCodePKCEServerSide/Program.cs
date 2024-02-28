@@ -1,6 +1,7 @@
 
 using AuthCodePKCEServerSide;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,12 +23,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 {
 
                     var tokenValidator = context.HttpContext.RequestServices.GetRequiredService<AuthCodePKCEServerSide.ICustomTokenValidator>();
+                    var idpSettings = context.HttpContext.RequestServices.GetRequiredService<IOptions<IdpSettings>>().Value;
                     var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-                    context.Token = token;
-                    var oktaDomain = "https://dev-95411323.okta.com";
-                    var oktaConfig = new OktaConfiguration(oktaDomain);
+                    context.Token = token;                
+                    
 
-                    var isValidToken = token != null && await tokenValidator.ValidateToken(token, oktaConfig);
+                    var isValidToken = token != null && await tokenValidator.ValidateToken(token, idpSettings);
 
                     if (!isValidToken)
                     {
