@@ -130,6 +130,15 @@ namespace TestOktaPKCE
             }
         }
 
+        private void button4_Click(object sender, EventArgs e)
+        {
+            var azureAdapter = new AzureAdapter("0a2a1325-4bc0-4b4c-bea6-1af3fe408392", RedirectUri, "81180712-5369-494f-9d7f-514eccf5e9f8");
+            var response = AuthHelper.RefreshAccessToken(azureAdapter, _refreshToken).Result;
+            response.TryGetValue("access_token", out string accessToken);
+            response.TryGetValue("refresh_token", out _refreshToken);
+            MessageBox.Show($"refreshed access token : {accessToken}");
+        }
+
         private void button5_Click(object sender, EventArgs e)
         {
             try
@@ -174,6 +183,8 @@ namespace TestOktaPKCE
             response.TryGetValue("refresh_token", out _refreshToken);
             MessageBox.Show($"refreshed access token : {accessToken}");
         }
+
+   
     }
 
    
