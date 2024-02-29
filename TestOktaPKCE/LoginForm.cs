@@ -165,6 +165,15 @@ namespace TestOktaPKCE
                 MessageBox.Show($"Error: {ex.Message}");
             }
         }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            var idpConfig = new Auth0Adapter("https://dev-o1iy1izzmsv8ayid.uk.auth0.com", "TNQ4NkuLF64NhHbNBB9rBKi4imyVSwAF", RedirectUri);
+            var response = AuthHelper.RefreshAccessToken(idpConfig, _refreshToken).Result;
+            response.TryGetValue("access_token", out string accessToken);
+            response.TryGetValue("refresh_token", out _refreshToken);
+            MessageBox.Show($"refreshed access token : {accessToken}");
+        }
     }
 
    

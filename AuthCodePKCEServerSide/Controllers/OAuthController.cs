@@ -26,9 +26,8 @@ namespace AuthCodePKCEServerSide.Controllers
             new KeyValuePair<string, string>("code", request.Code),
             new KeyValuePair<string, string>("redirect_uri", _idpSettings.RedirectUrl), // Replace with your redirect URI
             new KeyValuePair<string, string>("client_id", _idpSettings.ClientId ),          
-            new KeyValuePair<string, string>("code_verifier", request.CodeVerifier),
-            new KeyValuePair<string, string>("scope", HttpUtility.UrlEncode(_idpSettings.ExchangeCodeScope)),
-            new KeyValuePair<string, string>("client_secret", _idpSettings.ClientSecret )
+            new KeyValuePair<string, string>("code_verifier", request.CodeVerifier)
+
             
         });
 
