@@ -129,6 +129,42 @@ namespace TestOktaPKCE
                 MessageBox.Show($"Error: {ex.Message}");
             }
         }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string state = "random";
+                var idpConfig = new GoogleAdapter ("", "", RedirectUri);
+                var result = AuthHelper.StartAuthorization(idpConfig, state);
+                httpListener.SetCodeVerifier(result.Item1);
+                httpListener.SetExpectedState(state);
+                var authorizationRequest = result.Item2;
+                System.Diagnostics.Process.Start(authorizationRequest);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string state = "random";
+                var idpConfig = new Auth0Adapter ("https://dev-o1iy1izzmsv8ayid.uk.auth0.com", "TNQ4NkuLF64NhHbNBB9rBKi4imyVSwAF", RedirectUri);
+                var result = AuthHelper.StartAuthorization(idpConfig, state);
+                httpListener.SetCodeVerifier(result.Item1);
+                httpListener.SetExpectedState(state);
+                var authorizationRequest = result.Item2;
+                System.Diagnostics.Process.Start(authorizationRequest);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
     }
 
    
