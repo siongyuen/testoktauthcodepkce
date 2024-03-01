@@ -4,6 +4,10 @@ using Newtonsoft.Json;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols; // Add this for MemoryCache
 using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json.Linq;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text.Json;
+using System.Text;
 
 namespace AuthCodePKCEServerSide
 {
@@ -30,37 +34,39 @@ namespace AuthCodePKCEServerSide
             {
                 try
                 {
+                    bool validateResult = false;
+                    var handler = new JwtSecurityTokenHandler();
+                    var jwtSecurityToken = handler.ReadJwtToken(token);
+
+                    // Extract the header values
+                    var header = jwtSecurityToken.Header;
+                    string kidInString= string.Empty;           
+                                      
+                    if (header.TryGetValue("kid", out object kid))
+                    {
+                        kidInString = (string)kid;                        
+                    }
                     if (!DiscoveryDocumentCache.TryGetValue("DiscoveryDocument", out discoveryDocument))
                     {
                         var configurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
-                            _idpSetting.Issuer + "/.well-known/oauth-authorization-server",
+                            _idpSetting.Issuer + "/.well-known/openid-configuration",
                             new OpenIdConnectConfigurationRetriever(),
                             new HttpDocumentRetriever());
 
                         discoveryDocument = await configurationManager.GetConfigurationAsync();
                         DiscoveryDocumentCache.Set("DiscoveryDocument", discoveryDocument, DateTime.Now.Add(DiscoveryDocumentCacheDuration));
                     }
-
+                  
                     if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));
-
-                    var validationParameters = new TokenValidationParameters
-                    {
-                        RequireExpirationTime = true,
-                        RequireSignedTokens = true,
-                        ValidateIssuer = true,
-                        ValidIssuer = _idpSetting.Issuer,
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKeys = discoveryDocument.SigningKeys,
-                        ValidateLifetime = true,
-                        ClockSkew = TimeSpan.FromMinutes(2),
-                        ValidateAudience = false,
-                    };
-
-                    var principal = new JwtSecurityTokenHandler()
-                        .ValidateToken(token, validationParameters, out var rawValidatedToken);
-
-                    // Token is valid
-                    return true;
+                    foreach (SecurityKey signingKey in discoveryDocument.SigningKeys)
+                    {                        
+                        if (signingKey.KeyId == kidInString)
+                        {
+                            validateResult= true;
+                        }
+                    }
+                    validateResult = !IsTokenExpired(token);
+                    return validateResult;
                 }
                 catch (SecurityTokenValidationException)
                 {
@@ -73,6 +79,39 @@ namespace AuthCodePKCEServerSide
             }
 
             return false; // This line is redundant due to the loop logic but added for clarity
+        }
+        public static bool IsTokenExpired(string token)
+        {        
+                
+            var parts = token.Split('.');
+            if (parts.Length != 3)
+            {
+                throw new ArgumentException("The token does not appear to be a valid JWT.");
+            }
+                              
+            var payload = parts[1];
+            var payloadJson = Base64UrlDecode(payload);              
+            using (var jsonDoc = JsonDocument.Parse(payloadJson))
+            {
+                var expClaim = jsonDoc.RootElement.GetProperty("exp").GetInt64();
+                var expiration = DateTimeOffset.FromUnixTimeSeconds(expClaim).UtcDateTime;
+                return expiration < DateTime.UtcNow;
+            }
+            
+        }
+
+        private static string Base64UrlDecode(string input)
+        {
+            var output = input.Replace('-', '+').Replace('_', '/');
+            switch (output.Length % 4)
+            {
+                case 0: break;
+                case 2: output += "=="; break;
+                case 3: output += "="; break;
+                default: throw new ArgumentException("Illegal base64url string!", nameof(input));
+            }
+            var converted = Convert.FromBase64String(output);
+            return Encoding.UTF8.GetString(converted);
         }
     }
 }
