@@ -1,7 +1,9 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using Newtonsoft.Json;
-using System.Runtime.Caching; // Add this for MemoryCache
+using System.Runtime.Caching;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Protocols; // Add this for MemoryCache
 
 namespace AuthCodePKCEServerSide
 {
@@ -24,69 +26,56 @@ namespace AuthCodePKCEServerSide
     {
         private static readonly MemoryCache JwksCache = MemoryCache.Default;
         private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(30);
-        private  IdpSettings _idpSetting;
+        private IdpSettings _idpSetting;
 
 
 
         public async Task<bool> ValidateToken(string token, IdpSettings idpSetting)
         {
             _idpSetting = idpSetting;
-            var tokenHandler = new JwtSecurityTokenHandler();
 
-            var jsonWebKeySet = await GetJsonWebKeySetAsync(token); // Use await here
-            var parameters = new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKeys = jsonWebKeySet.Keys,
-                ValidateIssuer = true,
-                ValidIssuer = _idpSetting.Issuer ,
-                ValidateAudience = false,
-                ValidateLifetime = true
-            };
+            var configurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(_idpSetting.Issuer + "/.well-known/oauth-authorization-server",
+    new OpenIdConnectConfigurationRetriever(),
+    new HttpDocumentRetriever());
 
-            try
             {
-                tokenHandler.ValidateToken(token, parameters, out var validatedToken);
-                return validatedToken != null;
+                if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));
+
+                var discoveryDocument = await configurationManager.GetConfigurationAsync();
+                var signingKeys = discoveryDocument.SigningKeys;
+
+                var validationParameters = new TokenValidationParameters
+                {
+                    RequireExpirationTime = true,
+                    RequireSignedTokens = true,
+                    ValidateIssuer = true,
+                    ValidIssuer = _idpSetting.Issuer ,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKeys = signingKeys,
+                    ValidateLifetime = true,
+                    // Allow for some drift in server time
+                    // (a lower value is better; we recommend two minutes or less)
+                    ClockSkew = TimeSpan.FromMinutes(2),
+                    // See additional validation for aud below
+                    ValidateAudience = false,
+                };
+
+                try
+                {
+                    var principal = new JwtSecurityTokenHandler()
+                        .ValidateToken(token, validationParameters, out var rawValidatedToken);
+
+                    return true;
+                }
+                catch (SecurityTokenValidationException)
+                {
+                    // Logging, etc.
+
+                    return false;
+                }
             }
-            catch
-            {
-                return false;
-            }
+
         }
-
-        private async Task<JsonWebKeySet> GetJsonWebKeySetAsync(string token)
-        {
-            // Decode the token to extract the user ID (or sub claim)
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var jwtToken = tokenHandler.ReadJwtToken(token);
-            var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
-
-            // If unable to extract user ID, use a default or generic key
-            if (string.IsNullOrEmpty(userId))
-            {
-                userId = "generic";
-            }
-
-            var cacheKey = $"JWKS-{_idpSetting.Issuer}-{userId}";
-
-            if (JwksCache[cacheKey] is JsonWebKeySet cachedJwks && cachedJwks != null)
-            {
-                return cachedJwks;
-            }
-
-            var httpClient = new HttpClient();
-            var jwksUri = _idpSetting.JwksUri ;
-            var response = await httpClient.GetAsync(jwksUri);
-            response.EnsureSuccessStatusCode();
-
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-            var jsonWebKeySet = new JsonWebKeySet(jsonResponse);
-
-            JwksCache.Set(cacheKey, jsonWebKeySet, DateTimeOffset.Now.Add(CacheDuration));
-
-            return jsonWebKeySet;
-        }
-
     }
+    
 }
