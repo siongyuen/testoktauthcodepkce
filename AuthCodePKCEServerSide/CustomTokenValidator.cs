@@ -29,7 +29,6 @@ namespace AuthCodePKCEServerSide
             // Retry logic variables
             int retryCount = 0;
             int maxRetries = 1;
-
             while (retryCount <= maxRetries)
             {
                 try
@@ -65,7 +64,7 @@ namespace AuthCodePKCEServerSide
                             validateResult= true;
                         }
                     }
-                    validateResult = !IsTokenExpired(token);
+                    validateResult &= AdditionalTokenValidation(token, _idpSetting.Issuer);                  
                     return validateResult;
                 }
                 catch (SecurityTokenValidationException)
@@ -80,7 +79,7 @@ namespace AuthCodePKCEServerSide
 
             return false; // This line is redundant due to the loop logic but added for clarity
         }
-        public static bool IsTokenExpired(string token)
+        public static bool AdditionalTokenValidation(string token, string expectedIssuer)
         {        
                 
             var parts = token.Split('.');
@@ -94,12 +93,13 @@ namespace AuthCodePKCEServerSide
             using (var jsonDoc = JsonDocument.Parse(payloadJson))
             {
                 var expClaim = jsonDoc.RootElement.GetProperty("exp").GetInt64();
-                var expiration = DateTimeOffset.FromUnixTimeSeconds(expClaim).UtcDateTime;
-                return expiration < DateTime.UtcNow;
-            }
-            
+                var expiration = DateTimeOffset.FromUnixTimeSeconds(expClaim).UtcDateTime;             
+                var iss = jsonDoc.RootElement.GetProperty("iss").GetString();
+                return iss == expectedIssuer && expiration < DateTime.UtcNow; 
+            }            
         }
 
+    
         private static string Base64UrlDecode(string input)
         {
             var output = input.Replace('-', '+').Replace('_', '/');
