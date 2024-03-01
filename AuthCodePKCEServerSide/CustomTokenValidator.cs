@@ -95,7 +95,7 @@ namespace AuthCodePKCEServerSide
                 var expClaim = jsonDoc.RootElement.GetProperty("exp").GetInt64();
                 var expiration = DateTimeOffset.FromUnixTimeSeconds(expClaim).UtcDateTime;             
                 var iss = jsonDoc.RootElement.GetProperty("iss").GetString();
-                return iss == expectedIssuer && expiration < DateTime.UtcNow; 
+                return iss == expectedIssuer && expiration > DateTime.UtcNow; 
             }            
         }
 
