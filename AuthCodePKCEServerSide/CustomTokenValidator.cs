@@ -66,8 +66,7 @@ namespace AuthCodePKCEServerSide
                 {
                     retryCount++;
                     if (retryCount > maxRetries)
-                    {
-                        // Log the failure, token is invalid after retries
+                    {                        
                         return false;
                     }
                 }
