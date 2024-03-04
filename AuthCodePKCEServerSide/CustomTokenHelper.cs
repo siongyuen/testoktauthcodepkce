@@ -18,14 +18,14 @@ namespace AuthCodePKCEServerSide
 
     public class CustomTokenHelper : ICustomTokenHelper
     {
-        private IdpSettings _idpSetting;
+        private IdpSettings? _idpSetting;
         private static readonly MemoryCache DiscoveryDocumentCache = new MemoryCache(new MemoryCacheOptions());
         private static readonly TimeSpan DiscoveryDocumentCacheDuration = TimeSpan.FromMinutes(10);
 
         public async Task<bool> ValidateToken(string token, IdpSettings idpSetting)
         {
             _idpSetting = idpSetting;
-            OpenIdConnectConfiguration discoveryDocument;
+            OpenIdConnectConfiguration? discoveryDocument;
             // Retry logic variables
             int retryCount = 0;
             int maxRetries = 1;
@@ -41,21 +41,23 @@ namespace AuthCodePKCEServerSide
                     var header = jwtSecurityToken.Header;
                     string kidInString= string.Empty;
                     //https://learn.microsoft.com/en-us/answers/questions/1359059/signature-validation-of-my-access-token-private-ke                  
-                    if (header.TryGetValue("kid", out object kid))
+                    if (header.TryGetValue("kid", out object? kid))
                     {
                         kidInString = (string)kid;                        
                     }
-                    if (!DiscoveryDocumentCache.TryGetValue("DiscoveryDocument", out discoveryDocument))
+                    if (!DiscoveryDocumentCache.TryGetValue("DiscoveryDocument", out  discoveryDocument))
                     {
                         var configurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
                             _idpSetting.Issuer + "/.well-known/openid-configuration",
                             new OpenIdConnectConfigurationRetriever(),
                             new HttpDocumentRetriever());
 
-                        discoveryDocument = await configurationManager.GetConfigurationAsync();
+                        discoveryDocument = await configurationManager.GetConfigurationAsync();                     
+
                         DiscoveryDocumentCache.Set("DiscoveryDocument", discoveryDocument, DateTime.Now.Add(DiscoveryDocumentCacheDuration));
                     }
-                  
+                    if (discoveryDocument == null) { return false; }
+
                     if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));
                     foreach (SecurityKey signingKey in discoveryDocument.SigningKeys)
                     {                        

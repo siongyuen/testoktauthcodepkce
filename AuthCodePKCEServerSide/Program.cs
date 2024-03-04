@@ -22,29 +22,36 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             {
                 OnMessageReceived = async context =>
                 {
-
                     var tokenHelper = context.HttpContext.RequestServices.GetRequiredService<AuthCodePKCEServerSide.ICustomTokenHelper>();
-                    
                     var idpSettings = context.HttpContext.RequestServices.GetRequiredService<IOptions<IdpSettings>>().Value;
-                    var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-                    context.Token = token;                                   
 
-                    var isValidToken = token != null && await tokenHelper.ValidateToken(token, idpSettings);
+
+                    var authorizationHeader = context.Request.Headers["Authorization"].FirstOrDefault();
+                    var token = authorizationHeader?.Split(" ").Last();
+
+
+                    if (string.IsNullOrEmpty(token))
+                    {
+                        context.Fail("Token not provided");
+                        return;
+                    }
+
+
+                    var isValidToken = await tokenHelper.ValidateToken(token, idpSettings);
                     if (isValidToken)
                     {
-                       var claims = tokenHelper.ExtractClaim(token).Result ;
-                       var identity = new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme);
-                       var principal = new ClaimsPrincipal(identity);
-                       context.Principal = principal;
-                       context.Success(); // Marks the message as successfully processed, no need for further authentication
+                        var claims = await tokenHelper.ExtractClaim(token);
+                        var identity = new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme);
+                        var principal = new ClaimsPrincipal(identity);
+
+                        context.Principal = principal;
+                        context.Success();
                     }
                     else
                     {
-                        context.Fail("Invalid token"); // Explicitly fail authentication if token is invalid
+                        context.Fail("Invalid token");
                     }
-
-
-                }
+                }        
             };
         });
 
