@@ -12,7 +12,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<AuthCodePKCEServerSide.ICustomTokenValidator, AuthCodePKCEServerSide.CustomTokenValidator>();
+builder.Services.AddSingleton<AuthCodePKCEServerSide.ICustomTokenHelper, AuthCodePKCEServerSide.CustomTokenHelper>();
 builder.Services.Configure <IdpSettings >(builder.Configuration.GetSection("Idp"));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
@@ -23,22 +23,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 OnMessageReceived = async context =>
                 {
 
-                    var tokenValidator = context.HttpContext.RequestServices.GetRequiredService<AuthCodePKCEServerSide.ICustomTokenValidator>();
+                    var tokenHelper = context.HttpContext.RequestServices.GetRequiredService<AuthCodePKCEServerSide.ICustomTokenHelper>();
+                    
                     var idpSettings = context.HttpContext.RequestServices.GetRequiredService<IOptions<IdpSettings>>().Value;
                     var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-                    context.Token = token;                
-                    
+                    context.Token = token;                                   
 
-                    var isValidToken = token != null && await tokenValidator.ValidateToken(token, idpSettings);
-
+                    var isValidToken = token != null && await tokenHelper.ValidateToken(token, idpSettings);
                     if (isValidToken)
                     {
-                       var claims = new[] { new Claim(ClaimTypes.Name, "YourUserName") };
+                       var claims = tokenHelper.ExtractClaim(token).Result ;
                        var identity = new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme);
-                         var principal = new ClaimsPrincipal(identity);
+                       var principal = new ClaimsPrincipal(identity);
                        context.Principal = principal;
-
-                        context.Success(); // Marks the message as successfully processed, no need for further authentication
+                       context.Success(); // Marks the message as successfully processed, no need for further authentication
                     }
                     else
                     {
