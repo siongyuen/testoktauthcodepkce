@@ -13,7 +13,6 @@ namespace TestOktaPKCE
     {
         
         private const string RedirectUri = "http://localhost:12345/callback";
-        private string _codeVerifier;
         private const string OktaDomain = "https://dev-95411323.okta.com"; // Replace with your Okta domain
         private const string OktaClientId = "0oaefdvlfqiav6snB5d7"; // Replace with your client ID
         private static readonly HttpClient httpClient = new HttpClient();
@@ -45,7 +44,7 @@ namespace TestOktaPKCE
             // Update UI or internal state as necessary
         }
 
-        private async void button1_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
             try
             {
@@ -63,7 +62,7 @@ namespace TestOktaPKCE
             }
         }
 
-        private async void button2_Click(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e)
         {
             try
             {
@@ -79,7 +78,7 @@ namespace TestOktaPKCE
         }
 
 
-           
+
 
         public IEnumerable<Models.WeatherForecast> GetWeatherForecast()
         {
