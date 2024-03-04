@@ -2,6 +2,7 @@
 using AuthCodePKCEServerSide;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +13,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<AuthCodePKCEServerSide.ICustomTokenHelper, AuthCodePKCEServerSide.CustomTokenHelper>();
+builder.Services.AddSingleton<IValidatorFactory, ValidatorFactory >();
 builder.Services.Configure <IdpSettings >(builder.Configuration.GetSection("Idp"));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
@@ -22,26 +23,30 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             {
                 OnMessageReceived = async context =>
                 {
-                    var tokenHelper = context.HttpContext.RequestServices.GetRequiredService<AuthCodePKCEServerSide.ICustomTokenHelper>();
+                    ICustomTokenHelper? tokenHelper;
                     var idpSettings = context.HttpContext.RequestServices.GetRequiredService<IOptions<IdpSettings>>().Value;
-
-
                     var authorizationHeader = context.Request.Headers["Authorization"].FirstOrDefault();
                     var token = authorizationHeader?.Split(" ").Last();
-
 
                     if (string.IsNullOrEmpty(token))
                     {
                         context.Fail("Token not provided");
                         return;
                     }
-
-
+                    var handler = new JwtSecurityTokenHandler();
+                    if (!handler.CanReadToken(token))
+                    {
+                        context.Fail("Invalid JWT token format.");
+                        return;
+                    }
+                    // Parse the JWT token             
+                    var validatorFactory = context.HttpContext.RequestServices.GetRequiredService<IValidatorFactory>();
+                    tokenHelper = validatorFactory.GetTokenHelper(idpSettings.Issuer).Result ;               
                     var isValidToken = await tokenHelper.ValidateToken(token, idpSettings);
                     if (isValidToken)
                     {
-                        var claims = await tokenHelper.ExtractClaim(token);
-                        var identity = new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme);
+                        var jwtToken = handler.ReadJwtToken(token);
+                        var identity = new ClaimsIdentity(jwtToken.Claims, JwtBearerDefaults.AuthenticationScheme);
                         var principal = new ClaimsPrincipal(identity);
 
                         context.Principal = principal;

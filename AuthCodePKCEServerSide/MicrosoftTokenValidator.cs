@@ -12,11 +12,10 @@ namespace AuthCodePKCEServerSide
 {
     public interface ICustomTokenHelper
     {
-        Task<bool> ValidateToken(string token, IdpSettings idpSettings);
-        Task<IEnumerable<System.Security.Claims.Claim>> ExtractClaim(string token);
+        Task<bool> ValidateToken(string token, IdpSettings idpSettings);      
     }
 
-    public class CustomTokenHelper : ICustomTokenHelper
+    public class MicrosoftTokenValidator : ICustomTokenHelper
     {
         private IdpSettings? _idpSetting;
         private static readonly MemoryCache DiscoveryDocumentCache = new MemoryCache(new MemoryCacheOptions());
@@ -83,21 +82,7 @@ namespace AuthCodePKCEServerSide
         }
 
 
-        public Task<IEnumerable<Claim>> ExtractClaim(string token) 
-        {
-            // Check if the token can be read
-            var handler = new JwtSecurityTokenHandler();
-            if (!handler.CanReadToken(token))
-            {
-                throw new ArgumentException("Invalid JWT token format.");
-            }
 
-            // Parse the JWT token
-            var jwtToken = handler.ReadJwtToken(token);
-
-            // Return the claims found in the token
-            return Task.FromResult<IEnumerable<Claim>>(jwtToken.Claims);
-        }
         public static bool AdditionalTokenValidation(string token, string expectedIssuer)
         {        
                 
