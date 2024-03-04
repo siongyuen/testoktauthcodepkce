@@ -2,6 +2,7 @@
 using AuthCodePKCEServerSide;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,12 +31,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
                     var isValidToken = token != null && await tokenValidator.ValidateToken(token, idpSettings);
 
-                    if (!isValidToken)
+                    if (isValidToken)
                     {
-                        context.Fail("Invalid token");
+                       var claims = new[] { new Claim(ClaimTypes.Name, "YourUserName") };
+                       var identity = new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme);
+                         var principal = new ClaimsPrincipal(identity);
+                       context.Principal = principal;
+
+                        context.Success(); // Marks the message as successfully processed, no need for further authentication
                     }
-                
-               
+                    else
+                    {
+                        context.Fail("Invalid token"); // Explicitly fail authentication if token is invalid
+                    }
+
+
                 }
             };
         });

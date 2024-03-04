@@ -19,7 +19,8 @@ namespace AuthCodePKCEServerSide.Controllers
             _logger = logger;
         }
 
-        [HttpGet ]
+        [HttpGet]
+        [Authorize]
         public IEnumerable<WeatherForecast> Get()
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
