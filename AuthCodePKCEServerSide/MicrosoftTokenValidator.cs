@@ -71,14 +71,14 @@ namespace AuthCodePKCEServerSide
                 catch (SecurityTokenValidationException)
                 {
                     retryCount++;
+                    DiscoveryDocumentCache.Clear();
                     if (retryCount > maxRetries)
                     {                        
                         return false;
                     }
                 }
             }
-
-            return false; // This line is redundant due to the loop logic but added for clarity
+            return false; 
         }
 
 

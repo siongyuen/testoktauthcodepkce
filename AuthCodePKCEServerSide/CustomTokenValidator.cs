@@ -43,9 +43,7 @@ namespace AuthCodePKCEServerSide
 
                         DiscoveryDocumentCache.Set("DiscoveryDocument", discoveryDocument, DateTime.Now.Add(DiscoveryDocumentCacheDuration));
                     }
-                    if (discoveryDocument == null) { return false; }                
-                
-
+                    if (discoveryDocument == null) { return false; }               
                     // Create the parameters used for validation
                     var validationParameters = new TokenValidationParameters
                     {
@@ -82,6 +80,7 @@ namespace AuthCodePKCEServerSide
                 catch (SecurityTokenValidationException)
                 {
                     retryCount++;
+                    DiscoveryDocumentCache.Clear ();
                     if (retryCount > maxRetries)
                     {
                         return false;
