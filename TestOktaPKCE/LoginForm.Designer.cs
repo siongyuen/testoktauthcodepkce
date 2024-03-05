@@ -35,6 +35,8 @@
             this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
+            this.button9 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -107,11 +109,33 @@
             this.button8.UseVisualStyleBackColor = true;
             this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(1324, 36);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(336, 82);
+            this.button5.TabIndex = 9;
+            this.button5.Text = "Google- Get Token";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click_1);
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(1334, 154);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(336, 82);
+            this.button9.TabIndex = 10;
+            this.button9.Text = "Google - Refresh Token";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
             // LoginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1213, 450);
+            this.ClientSize = new System.Drawing.Size(2072, 450);
+            this.Controls.Add(this.button9);
+            this.Controls.Add(this.button5);
             this.Controls.Add(this.button8);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.button4);
@@ -135,6 +159,8 @@
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button button9;
     }
 }
 

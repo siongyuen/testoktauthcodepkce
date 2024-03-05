@@ -36,7 +36,8 @@ namespace TestOktaPKCE
                                        $"&redirect_uri={HttpUtility.UrlEncode(RedirectUri)}" +
                                        $"&state={state}" +
                                        "&code_challenge_method=S256" +
-                                       $"&code_challenge={codeChallenge}";
+                                       $"&code_challenge={codeChallenge}" +
+                                       "&access_type=offline&prompt=consent";
 
             return Tuple.Create(codeVerifier, authorizationRequest);
         }

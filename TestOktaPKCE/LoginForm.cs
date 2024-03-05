@@ -12,7 +12,7 @@ namespace TestOktaPKCE
     public partial class LoginForm : Form
     {
         
-        private const string RedirectUri = "http://localhost:12345/callback";
+        private const string RedirectUri = "http://localhost:12345/callback";      
         private const string OktaDomain = "https://dev-95411323.okta.com"; // Replace with your Okta domain
         private const string OktaClientId = "0oaefdvlfqiav6snB5d7"; // Replace with your client ID
         private static readonly HttpClient httpClient = new HttpClient();
@@ -183,7 +183,32 @@ namespace TestOktaPKCE
             MessageBox.Show($"refreshed access token : {accessToken}");
         }
 
-   
+        private void button5_Click_1(object sender, EventArgs e)
+        {
+            try
+            {
+                string state = "random";
+                var idpConfig = new GoogleAdapter ("518065221759-v44j9p3t6fil3thllii3mk5dn64q4e3m.apps.googleusercontent.com", "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", RedirectUri );
+                var result = AuthHelper.StartAuthorization(idpConfig, state);
+                httpListener.SetCodeVerifier(result.Item1);
+                httpListener.SetExpectedState(state);
+                var authorizationRequest = result.Item2;
+                System.Diagnostics.Process.Start(authorizationRequest);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            var idpConfig = new GoogleAdapter("518065221759-v44j9p3t6fil3thllii3mk5dn64q4e3m.apps.googleusercontent.com", "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", RedirectUri);
+            var response = AuthHelper.RefreshAccessToken(idpConfig, _refreshToken).Result;
+            response.TryGetValue("access_token", out string accessToken);
+            response.TryGetValue("refresh_token", out _refreshToken);
+            MessageBox.Show($"refreshed access token : {accessToken}");
+        }
     }
 
    
