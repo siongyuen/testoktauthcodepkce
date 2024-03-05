@@ -64,3 +64,4 @@ bin/
 /AuthCodePKCEServerSide/obj/Debug/net8.0/AuthCodePKCEServerSide.AssemblyInfoInputs.cache
 **/bin/*
 **/obj/*
+/AuthCodePKCEServerSide/appsettings.json
