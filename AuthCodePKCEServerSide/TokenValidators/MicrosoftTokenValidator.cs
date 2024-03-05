@@ -10,9 +10,9 @@ using System.Security.Claims;
 using System.Security.Principal;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-namespace AuthCodePKCEServerSide
+namespace AuthCodePKCEServerSide.TokenValidators
 {
- 
+
 
     public class MicrosoftTokenValidator : ICustomTokenHelper
     {
@@ -37,20 +37,20 @@ namespace AuthCodePKCEServerSide
 
                     // Extract the header values
                     var header = jwtSecurityToken.Header;
-                    string kidInString= string.Empty;
+                    string kidInString = string.Empty;
                     //https://learn.microsoft.com/en-us/answers/questions/1359059/signature-validation-of-my-access-token-private-ke                  
                     if (header.TryGetValue("kid", out object? kid))
                     {
-                        kidInString = (string)kid;                        
+                        kidInString = (string)kid;
                     }
-                    if (!DiscoveryDocumentCache.TryGetValue("DiscoveryDocument", out  discoveryDocument))
+                    if (!DiscoveryDocumentCache.TryGetValue("DiscoveryDocument", out discoveryDocument))
                     {
                         var configurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
                             _idpSetting.Issuer + "/.well-known/openid-configuration",
                             new OpenIdConnectConfigurationRetriever(),
                             new HttpDocumentRetriever());
 
-                        discoveryDocument = await configurationManager.GetConfigurationAsync();                     
+                        discoveryDocument = await configurationManager.GetConfigurationAsync();
 
                         DiscoveryDocumentCache.Set("DiscoveryDocument", discoveryDocument, DateTime.Now.Add(DiscoveryDocumentCacheDuration));
                     }
@@ -58,13 +58,13 @@ namespace AuthCodePKCEServerSide
 
                     if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));
                     foreach (SecurityKey signingKey in discoveryDocument.SigningKeys)
-                    {                        
+                    {
                         if (signingKey.KeyId == kidInString)
                         {
-                            validateResult= true;
+                            validateResult = true;
                         }
                     }
-                    validateResult &= AdditionalTokenValidation(token, _idpSetting.Issuer);                  
+                    validateResult &= AdditionalTokenValidation(token, _idpSetting.Issuer);
                     return validateResult;
                 }
                 catch (SecurityTokenValidationException)
@@ -72,37 +72,37 @@ namespace AuthCodePKCEServerSide
                     retryCount++;
                     DiscoveryDocumentCache.Clear();
                     if (retryCount > maxRetries)
-                    {                        
+                    {
                         return false;
                     }
                 }
             }
-            return false; 
+            return false;
         }
 
 
 
         public static bool AdditionalTokenValidation(string token, string expectedIssuer)
-        {        
-                
+        {
+
             var parts = token.Split('.');
             if (parts.Length != 3)
             {
                 throw new ArgumentException("The token does not appear to be a valid JWT.");
             }
-                              
+
             var payload = parts[1];
-            var payloadJson = Base64UrlDecode(payload);              
+            var payloadJson = Base64UrlDecode(payload);
             using (var jsonDoc = JsonDocument.Parse(payloadJson))
             {
                 var expClaim = jsonDoc.RootElement.GetProperty("exp").GetInt64();
-                var expiration = DateTimeOffset.FromUnixTimeSeconds(expClaim).UtcDateTime;             
+                var expiration = DateTimeOffset.FromUnixTimeSeconds(expClaim).UtcDateTime;
                 var iss = jsonDoc.RootElement.GetProperty("iss").GetString();
-                return iss == expectedIssuer && expiration > DateTime.UtcNow; 
-            }            
+                return iss == expectedIssuer && expiration > DateTime.UtcNow;
+            }
         }
 
-    
+
         private static string Base64UrlDecode(string input)
         {
             var output = input.Replace('-', '+').Replace('_', '/');

@@ -10,8 +10,8 @@ using System.Security.Claims;
 using System.Security.Principal;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-namespace AuthCodePKCEServerSide
-{  
+namespace AuthCodePKCEServerSide.TokenValidators
+{
 
     public class CustomTokenValidator : ICustomTokenHelper
     {
@@ -33,7 +33,7 @@ namespace AuthCodePKCEServerSide
                     bool validateResult = false;
                     var handler = new JwtSecurityTokenHandler();
                     var jwtSecurityToken = handler.ReadJwtToken(token);
-          
+
                     if (!DiscoveryDocumentCache.TryGetValue("DiscoveryDocument", out discoveryDocument))
                     {
                         var configurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
@@ -45,14 +45,14 @@ namespace AuthCodePKCEServerSide
 
                         DiscoveryDocumentCache.Set("DiscoveryDocument", discoveryDocument, DateTime.Now.Add(DiscoveryDocumentCacheDuration));
                     }
-                    if (discoveryDocument == null) { return false; }               
+                    if (discoveryDocument == null) { return false; }
                     // Create the parameters used for validation
                     var validationParameters = new TokenValidationParameters
                     {
-                        ValidateIssuerSigningKey = true,                        
+                        ValidateIssuerSigningKey = true,
                         IssuerSigningKeys = discoveryDocument.SigningKeys,
                         ValidateIssuer = false,
-                        ValidIssuer = string.Empty ,
+                        ValidIssuer = string.Empty,
                         ValidateAudience = false,
                         ValidAudience = string.Empty,
                         ValidateLifetime = true,
@@ -61,8 +61,8 @@ namespace AuthCodePKCEServerSide
 
                     try
                     {
-                     
-                        var principal = handler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);                    
+
+                        var principal = handler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
 
                         validateResult = true; // Token is valid
                     }
@@ -82,7 +82,7 @@ namespace AuthCodePKCEServerSide
                 catch (SecurityTokenValidationException)
                 {
                     retryCount++;
-                    DiscoveryDocumentCache.Clear ();
+                    DiscoveryDocumentCache.Clear();
                     if (retryCount > maxRetries)
                     {
                         return false;
@@ -100,6 +100,6 @@ namespace AuthCodePKCEServerSide
             return await Task.FromResult(new ClaimsPrincipal(identity));
 
         }
-            
+
     }
 }

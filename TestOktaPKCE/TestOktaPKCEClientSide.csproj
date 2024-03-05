@@ -97,8 +97,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Auth0Adapter.cs" />
-    <Compile Include="GoogleAdapter.cs" />
+    <Compile Include="Adapters\Auth0Adapter.cs" />
+    <Compile Include="Adapters\GoogleAdapter.cs" />
     <Compile Include="HttpAuthenticationListener.cs" />
     <Compile Include="LoginForm.cs">
       <SubType>Form</SubType>
@@ -108,7 +108,7 @@
     </Compile>
     <Compile Include="Models.cs" />
     <Compile Include="AuthHelper.cs" />
-    <Compile Include="AzureAdapter.cs" />
+    <Compile Include="Adapters\AzureAdapter.cs" />
     <Compile Include="OktaAdapter.cs" />
     <Compile Include="PKCEHelper.cs" />
     <Compile Include="Program.cs" />

@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace AuthCodePKCEServerSide
+namespace AuthCodePKCEServerSide.TokenValidators
 {
     public class GoogleTokenValidator : ICustomTokenHelper
 

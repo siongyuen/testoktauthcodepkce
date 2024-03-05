@@ -1,5 +1,6 @@
 
 using AuthCodePKCEServerSide;
+using AuthCodePKCEServerSide.TokenValidators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using System.IdentityModel.Tokens.Jwt;

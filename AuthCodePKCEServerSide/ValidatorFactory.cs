@@ -1,4 +1,6 @@
-﻿namespace AuthCodePKCEServerSide
+﻿using AuthCodePKCEServerSide.TokenValidators;
+
+namespace AuthCodePKCEServerSide
 {
     public interface IValidatorFactory
       {
