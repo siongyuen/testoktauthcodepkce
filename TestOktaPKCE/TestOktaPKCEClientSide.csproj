@@ -109,7 +109,7 @@
     <Compile Include="Models.cs" />
     <Compile Include="AuthHelper.cs" />
     <Compile Include="Adapters\AzureAdapter.cs" />
-    <Compile Include="OktaAdapter.cs" />
+    <Compile Include="Adapters\OktaAdapter.cs" />
     <Compile Include="PKCEHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
