@@ -1,9 +1,7 @@
-﻿using AuthCodePKCEServerSide.TokenValidators;
-
-namespace AuthCodePKCEServerSide
+﻿namespace AuthCodePKCEServerSide.TokenValidators
 {
     public interface IValidatorFactory
-      {
+    {
         Task<ICustomTokenHelper> GetTokenHelper(string issuer);
     }
 
@@ -23,7 +21,7 @@ namespace AuthCodePKCEServerSide
                 throw new ArgumentNullException(nameof(issuer), "Issuer cannot be null.");
             }
 
-            if (issuer.StartsWith ("https://sts.windows.net"))
+            if (issuer.StartsWith("https://sts.windows.net"))
             {
                 return Task.FromResult<ICustomTokenHelper>(new MicrosoftTokenValidator());
             }

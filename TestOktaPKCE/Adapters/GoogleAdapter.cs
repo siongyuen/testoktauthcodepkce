@@ -50,10 +50,10 @@ namespace TestOktaPKCE
                 new KeyValuePair<string, string>("grant_type", "refresh_token"),
                 new KeyValuePair<string, string>("refresh_token", refreshToken),
                 new KeyValuePair<string, string>("client_id", ClientId),
-                new KeyValuePair<string, string>("client_secret", ClientSecret),
+                new KeyValuePair<string, string>("client_secret", ClientSecret),//must have client secret for google
                 new KeyValuePair<string, string>("scope", "openid email profile"),
             });
-
+            
             var response = await httpClient.PostAsync(tokenEndpoint, requestContent).ConfigureAwait(false);
             if (!response.IsSuccessStatusCode)
             {

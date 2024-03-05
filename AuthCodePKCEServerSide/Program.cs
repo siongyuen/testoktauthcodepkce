@@ -28,13 +28,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     var idpSettings = context.HttpContext.RequestServices.GetRequiredService<IOptions<IdpSettings>>().Value;
                     var authorizationHeader = context.Request.Headers["Authorization"].FirstOrDefault();
                     var token = authorizationHeader?.Split(" ").Last();
-
                     if (string.IsNullOrEmpty(token))
                     {
                         context.Fail("Token not provided");
                         return;
                     }                
-                    // Parse the JWT token             
+                 
                     var validatorFactory = context.HttpContext.RequestServices.GetRequiredService<IValidatorFactory>();
                     tokenHelper = validatorFactory.GetTokenHelper(idpSettings.Issuer).Result ;               
                     var isValidToken = await tokenHelper.ValidateToken(token, idpSettings);
