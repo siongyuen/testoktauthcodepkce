@@ -97,7 +97,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Adapters\Auth0Adapter.cs" />
     <Compile Include="Adapters\GoogleAdapter.cs" />
     <Compile Include="HttpAuthenticationListener.cs" />
     <Compile Include="LoginForm.cs">
