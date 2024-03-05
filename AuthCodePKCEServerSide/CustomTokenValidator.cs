@@ -7,6 +7,8 @@ using Microsoft.Extensions.Caching.Memory;
 using System.Text.Json;
 using System.Text;
 using System.Security.Claims;
+using System.Security.Principal;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace AuthCodePKCEServerSide
 {  
@@ -89,5 +91,15 @@ namespace AuthCodePKCEServerSide
             }
             return false; // This line is redundant due to the loop logic but added for clarity
         }
+
+        public async Task<ClaimsPrincipal> GetContextPrincipal(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+            var identity = new ClaimsIdentity(jwtToken.Claims, JwtBearerDefaults.AuthenticationScheme);
+            return await Task.FromResult(new ClaimsPrincipal(identity));
+
+        }
+            
     }
 }

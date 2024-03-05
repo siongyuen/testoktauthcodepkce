@@ -45,12 +45,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     var isValidToken = await tokenHelper.ValidateToken(token, idpSettings);
                     if (isValidToken)
                     {
-                        var jwtToken = handler.ReadJwtToken(token);
-                        var identity = new ClaimsIdentity(jwtToken.Claims, JwtBearerDefaults.AuthenticationScheme);
-                        var principal = new ClaimsPrincipal(identity);
-
-                        context.Principal = principal;
-                        context.Success();
+                        context.Principal = await tokenHelper.GetContextPrincipal(token);
                     }
                     else
                     {
