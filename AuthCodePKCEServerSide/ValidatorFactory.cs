@@ -29,7 +29,7 @@ namespace AuthCodePKCEServerSide
             }
             else
             {
-                return Task.FromResult<ICustomTokenHelper>(new CustomTokenValidator());
+                return Task.FromResult<ICustomTokenHelper>(new OktaTokenValidator());
             }
         }
     }

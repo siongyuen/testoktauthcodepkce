@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 namespace AuthCodePKCEServerSide.TokenValidators
 {
 
-    public class CustomTokenValidator : ICustomTokenHelper
+    public class OktaTokenValidator : ICustomTokenHelper
     {
         private IdpSettings? _idpSetting;
         private static readonly MemoryCache DiscoveryDocumentCache = new MemoryCache(new MemoryCacheOptions());
