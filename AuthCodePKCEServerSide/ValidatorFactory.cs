@@ -23,13 +23,21 @@ namespace AuthCodePKCEServerSide
                 throw new ArgumentNullException(nameof(issuer), "Issuer cannot be null.");
             }
 
-            if (issuer.Contains("https://sts.windows.net"))
+            if (issuer.StartsWith ("https://sts.windows.net"))
             {
                 return Task.FromResult<ICustomTokenHelper>(new MicrosoftTokenValidator());
             }
-            else
+            else if (issuer.Contains("okta.com"))
             {
                 return Task.FromResult<ICustomTokenHelper>(new OktaTokenValidator());
+            }
+            else if (issuer.StartsWith("https://accounts.google.com"))
+            {
+                return Task.FromResult<ICustomTokenHelper>(new GoogleTokenValidator());
+            }
+            else
+            {
+                throw new ArgumentException("Not supported");
             }
         }
     }

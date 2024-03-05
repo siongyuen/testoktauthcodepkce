@@ -33,13 +33,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     {
                         context.Fail("Token not provided");
                         return;
-                    }
-                    var handler = new JwtSecurityTokenHandler();
-                    if (!handler.CanReadToken(token))
-                    {
-                        context.Fail("Invalid JWT token format.");
-                        return;
-                    }
+                    }                
                     // Parse the JWT token             
                     var validatorFactory = context.HttpContext.RequestServices.GetRequiredService<IValidatorFactory>();
                     tokenHelper = validatorFactory.GetTokenHelper(idpSettings.Issuer).Result ;               
@@ -47,6 +41,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     if (isValidToken)
                     {
                         context.Principal = await tokenHelper.GetContextPrincipal(token);
+                        context.Success();
                     }
                     else
                     {
