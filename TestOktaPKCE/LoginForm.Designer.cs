@@ -51,7 +51,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(242, 287);
+            this.button2.Location = new System.Drawing.Point(420, 316);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(336, 82);
             this.button2.TabIndex = 1;
@@ -71,7 +71,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(434, 141);
+            this.button4.Location = new System.Drawing.Point(434, 145);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(336, 82);
             this.button4.TabIndex = 5;
@@ -81,7 +81,7 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(434, 36);
+            this.button6.Location = new System.Drawing.Point(434, 27);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(336, 82);
             this.button6.TabIndex = 3;
@@ -91,27 +91,21 @@
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(850, 36);
+            this.button7.Location = new System.Drawing.Point(0, 0);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(336, 82);
-            this.button7.TabIndex = 7;
-            this.button7.Text = "Auth0- Get Token";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
+            this.button7.Size = new System.Drawing.Size(75, 23);
+            this.button7.TabIndex = 12;
             // 
             // button8
             // 
-            this.button8.Location = new System.Drawing.Point(850, 141);
+            this.button8.Location = new System.Drawing.Point(0, 0);
             this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(336, 82);
-            this.button8.TabIndex = 8;
-            this.button8.Text = "Auth0 - Refresh Token";
-            this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.button8_Click);
+            this.button8.Size = new System.Drawing.Size(75, 23);
+            this.button8.TabIndex = 11;
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(1324, 36);
+            this.button5.Location = new System.Drawing.Point(842, 27);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(336, 82);
             this.button5.TabIndex = 9;
@@ -121,7 +115,7 @@
             // 
             // button9
             // 
-            this.button9.Location = new System.Drawing.Point(1334, 154);
+            this.button9.Location = new System.Drawing.Point(842, 145);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(336, 82);
             this.button9.TabIndex = 10;
@@ -133,7 +127,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(2072, 450);
+            this.ClientSize = new System.Drawing.Size(1261, 448);
             this.Controls.Add(this.button9);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button8);

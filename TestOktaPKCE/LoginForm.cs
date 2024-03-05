@@ -156,32 +156,7 @@ namespace TestOktaPKCE
             }
         }
 
-        private void button7_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                string state = "random";
-                var idpConfig = new Auth0Adapter ("https://dev-o1iy1izzmsv8ayid.uk.auth0.com", "TNQ4NkuLF64NhHbNBB9rBKi4imyVSwAF", RedirectUri);
-                var result = AuthHelper.StartAuthorization(idpConfig, state);
-                httpListener.SetCodeVerifier(result.Item1);
-                httpListener.SetExpectedState(state);
-                var authorizationRequest = result.Item2;
-                System.Diagnostics.Process.Start(authorizationRequest);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}");
-            }
-        }
-
-        private void button8_Click(object sender, EventArgs e)
-        {
-            var idpConfig = new Auth0Adapter("https://dev-o1iy1izzmsv8ayid.uk.auth0.com", "TNQ4NkuLF64NhHbNBB9rBKi4imyVSwAF", RedirectUri);
-            var response = AuthHelper.RefreshAccessToken(idpConfig, _refreshToken).Result;
-            response.TryGetValue("access_token", out string accessToken);
-            response.TryGetValue("refresh_token", out _refreshToken);
-            MessageBox.Show($"refreshed access token : {accessToken}");
-        }
+       
 
         private void button5_Click_1(object sender, EventArgs e)
         {
