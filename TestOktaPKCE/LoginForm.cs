@@ -101,13 +101,7 @@ namespace TestOktaPKCE
            ;
         }
        
-        private void button3_Click(object sender, EventArgs e)
-        {
-            
-            _accessToken = AuthHelper.RefreshToken("https://localhost:7064/refresh-token", "siongyuen.cheah@goviewpoint.com").Result;
-       
-            MessageBox.Show($"refreshed access token : {_accessToken}");
-        }
+    
 
         private void button6_Click(object sender, EventArgs e)
         {
@@ -169,14 +163,7 @@ namespace TestOktaPKCE
             {
                 MessageBox.Show($"Error: {ex.Message}");
             }
-        }
-
-        private void button9_Click(object sender, EventArgs e)
-        {
-            _accessToken = AuthHelper.RefreshToken("https://localhost:7064/refresh-token", "siongyuen.cheah@goviewpoint.com").Result;
-
-            MessageBox.Show($"refreshed access token : {_accessToken}");
-        }
+        } 
     }
 
    
