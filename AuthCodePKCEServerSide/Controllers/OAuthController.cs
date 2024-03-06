@@ -59,14 +59,13 @@ namespace AuthCodePKCEServerSide.Controllers
                     new KeyValuePair<string, string>("client_id", _idpSettings.ClientId),
                     new KeyValuePair<string, string>("client_secret", _idpSettings.ClientSecret)
                 });
-
                 var response = await httpClient.PostAsync(_idpSettings.TokenEndpoint, content);
 
                 if (!response.IsSuccessStatusCode)
                 {
                     return BadRequest("Failed to refresh token.");
                 }
-
+                _tokenCache.SetTokens(userId, refreshToken);
                 var tokenResponse = await response.Content.ReadAsStringAsync();
                 return Ok(tokenResponse);
             }
