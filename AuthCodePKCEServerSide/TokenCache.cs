@@ -2,24 +2,24 @@
 {
     public interface ITokenCache
     {
-        void SetTokens(string userId, string accessToken, string refreshToken);
-        (string AccessToken, string RefreshToken)? GetTokens(string userId);
+        void SetTokens(string userId, string refreshToken);
+         string? GetRefreshToken(string userId);
     }
 
     public class TokenCache : ITokenCache
     {
-        private readonly Dictionary<string, (string AccessToken, string RefreshToken)> _cache = new();
+        private readonly Dictionary<string, string> _cache = new();
 
-        public void SetTokens(string userId, string accessToken, string refreshToken)
+        public void SetTokens(string userId,  string refreshToken)
         {
-            _cache[userId] = (accessToken, refreshToken);
+            _cache[userId] = refreshToken;
         }
 
-        public (string AccessToken, string RefreshToken)? GetTokens(string userId)
+        public string? GetRefreshToken(string userId)
         {
-            if (_cache.TryGetValue(userId, out var tokens))
+            if (_cache.TryGetValue(userId, out var refreshToken))
             {
-                return tokens;
+                return refreshToken;
             }
 
             return null;

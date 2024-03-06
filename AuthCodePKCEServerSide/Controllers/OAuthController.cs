@@ -45,14 +45,17 @@ namespace AuthCodePKCEServerSide.Controllers
 
         [HttpPost]
         [Route("refresh-token")]
-        public async Task<IActionResult> RefreshToken([FromForm] RefreshTokenRequest request)
+        public async Task<IActionResult> RefreshToken(string userId)
         {
             using (var httpClient = new HttpClient())
             {
+                string? refreshToken = _tokenCache.GetRefreshToken(userId);
+                if (refreshToken == null) 
+                { return BadRequest("Failed to refresh token."); }
                 var content = new FormUrlEncodedContent(new[]
                 {
                     new KeyValuePair<string, string>("grant_type", "refresh_token"),
-                    new KeyValuePair<string, string>("refresh_token", request.RefreshToken),
+                    new KeyValuePair<string, string>("refresh_token",refreshToken ),
                     new KeyValuePair<string, string>("client_id", _idpSettings.ClientId),
                     new KeyValuePair<string, string>("client_secret", _idpSettings.ClientSecret)
                 });
