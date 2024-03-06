@@ -46,7 +46,6 @@ namespace AuthCodePKCEServerSide.Controllers
                 var jsonContent = await response.Content.ReadAsStringAsync();
                 var tokens = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonContent);
                 tokens.TryGetValue("refresh_token", out var refreshToken);
-
                 _tokenCache.SetTokens("siongyuen.cheah@goviewpoint.com", refreshToken);
                 return Ok(jsonContent);
             }
@@ -74,9 +73,13 @@ namespace AuthCodePKCEServerSide.Controllers
                 {
                     return BadRequest("Failed to refresh token.");
                 }
-                _tokenCache.SetTokens(request.UserId, refreshToken);
-                var tokenResponse = await response.Content.ReadAsStringAsync();
-                return Ok(tokenResponse);
+            
+                var jsonContent = await response.Content.ReadAsStringAsync();
+                var tokens = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonContent);
+                tokens.TryGetValue("refresh_token", out var newRefreshToken);
+                _tokenCache.SetTokens(request.UserId, newRefreshToken);
+                tokens.TryGetValue("access_token", out var newAccessToken);
+                return Ok(newAccessToken);
             }
         }
     }
