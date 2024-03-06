@@ -17,7 +17,7 @@ namespace TestOktaPKCE
         private const string OktaClientId = "0oaefdvlfqiav6snB5d7"; // Replace with your client ID
         private static readonly HttpClient httpClient = new HttpClient();
         private string _accessToken;
-        private string _refreshToken;
+        
         private readonly HttpAuthenticationListener httpListener;
 
 
@@ -35,11 +35,10 @@ namespace TestOktaPKCE
 
         }
 
-        private void HttpListener_AccessTokenObtained(object sender, Models.TokenResponse  tokenResponse)
+        private void HttpListener_AccessTokenObtained(object sender, string  accessToken)
         {
-            MessageBox.Show("Access Token Obtain : " + tokenResponse.AccessToken);
-            _accessToken = tokenResponse.AccessToken ;
-            _refreshToken = tokenResponse.RefreshToken;
+            MessageBox.Show("Access Token Obtain : " + accessToken);
+            _accessToken = accessToken;  
 
             // Update UI or internal state as necessary
         }
@@ -104,10 +103,9 @@ namespace TestOktaPKCE
        
         private void button3_Click(object sender, EventArgs e)
         {
-            var oktaConfig = new OktaAdapter(OktaDomain, OktaClientId, RedirectUri);
-            var response = AuthHelper.RefreshAccessToken(oktaConfig, _refreshToken).Result;
-            response.TryGetValue("access_token", out string accessToken);
-            response.TryGetValue("refresh_token", out _refreshToken);
+            
+            var accessToken = AuthHelper.RefreshToken("siongyuen.cheah@goviewpoint.com").Result;
+       
             MessageBox.Show($"refreshed access token : {accessToken}");
         }
 
@@ -131,10 +129,8 @@ namespace TestOktaPKCE
 
         private void button4_Click(object sender, EventArgs e)
         {
-            var azureAdapter = new AzureAdapter("0a2a1325-4bc0-4b4c-bea6-1af3fe408392", RedirectUri, "81180712-5369-494f-9d7f-514eccf5e9f8");
-            var response = AuthHelper.RefreshAccessToken(azureAdapter, _refreshToken).Result;
-            response.TryGetValue("access_token", out string accessToken);
-            response.TryGetValue("refresh_token", out _refreshToken);
+            var accessToken = AuthHelper.RefreshToken("siongyuen.cheah@goviewpoint.com").Result;
+
             MessageBox.Show($"refreshed access token : {accessToken}");
         }
 
@@ -178,10 +174,8 @@ namespace TestOktaPKCE
 
         private void button9_Click(object sender, EventArgs e)
         {
-            var idpConfig = new GoogleAdapter("518065221759-v44j9p3t6fil3thllii3mk5dn64q4e3m.apps.googleusercontent.com", "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", RedirectUri);
-            var response = AuthHelper.RefreshAccessToken(idpConfig, _refreshToken).Result;
-            response.TryGetValue("access_token", out string accessToken);
-            response.TryGetValue("refresh_token", out _refreshToken);
+            var accessToken = AuthHelper.RefreshToken("siongyuen.cheah@goviewpoint.com").Result;
+
             MessageBox.Show($"refreshed access token : {accessToken}");
         }
     }

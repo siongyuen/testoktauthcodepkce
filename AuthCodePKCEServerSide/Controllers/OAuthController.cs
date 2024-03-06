@@ -7,6 +7,11 @@ using System.Web;
 using System.Net.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Newtonsoft.Json.Linq;
+using System.Security.Claims;
+using Newtonsoft.Json;
+using System.Net.Http.Json;
 
 namespace AuthCodePKCEServerSide.Controllers
 {
@@ -38,18 +43,21 @@ namespace AuthCodePKCEServerSide.Controllers
                     return BadRequest("Failed to exchange code for token.");
                 }
 
-                var tokenResponse = await response.Content.ReadAsStringAsync();
-                return Ok(tokenResponse);
+                var jsonContent = await response.Content.ReadAsStringAsync();
+                var tokens = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonContent);
+                tokens.TryGetValue("refresh_token", out var refreshToken);
+                _tokenCache.SetTokens("siongyuen.cheah@goviewpoint.com", refreshToken);
+                return Ok(jsonContent);
             }
         }
 
         [HttpPost]
         [Route("refresh-token")]
-        public async Task<IActionResult> RefreshToken(string userId)
+        public async Task<IActionResult> RefreshToken([FromForm] RefreshTokenRequest request)
         {
             using (var httpClient = new HttpClient())
             {
-                string? refreshToken = _tokenCache.GetRefreshToken(userId);
+                string? refreshToken = _tokenCache.GetRefreshToken(request.UserId);
                 if (refreshToken == null) 
                 { return BadRequest("Failed to refresh token."); }
                 var content = new FormUrlEncodedContent(new[]
@@ -65,7 +73,7 @@ namespace AuthCodePKCEServerSide.Controllers
                 {
                     return BadRequest("Failed to refresh token.");
                 }
-                _tokenCache.SetTokens(userId, refreshToken);
+                _tokenCache.SetTokens(request.UserId, refreshToken);
                 var tokenResponse = await response.Content.ReadAsStringAsync();
                 return Ok(tokenResponse);
             }
@@ -80,6 +88,6 @@ namespace AuthCodePKCEServerSide.Controllers
 
     public class RefreshTokenRequest
     {
-        public string RefreshToken { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
     }
 }

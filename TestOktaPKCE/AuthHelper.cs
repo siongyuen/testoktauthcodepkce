@@ -17,11 +17,6 @@ namespace TestOktaPKCE
             return idpConfig.StartAuthorization(state);
         }
 
-        public static async Task<Dictionary<string, string>> RefreshAccessToken(Models.IIdpAdapter idpConfig, string refreshToken)
-        {
-            return await idpConfig.RefreshAccessToken(refreshToken, httpClient ).ConfigureAwait(false);
-        }
-
         public static async Task<string> SendCodeToServerAsync(string serverEndpoint, string code, string codeVerifier)
         {
             var content = new FormUrlEncodedContent(new[]
@@ -43,13 +38,13 @@ namespace TestOktaPKCE
         {
             using (var httpClient = new HttpClient())
             {
-                var requestUri = "https://yourserver.com/refresh-token"; // Your endpoint
+                var requestUri = "https://localhost:7064/refresh-token"; 
                 var content = new FormUrlEncodedContent(new[]
                 {
-        new KeyValuePair<string, string>("userId", "theUserId") // Replace "theUserId" with the actual userId
-    });
+                    new KeyValuePair<string, string>("UserId",userId) 
+                });
 
-                var response = await httpClient.PostAsync(requestUri, content);
+                var response = await httpClient.PostAsync(requestUri, content).ConfigureAwait(false);
 
                 if (!response.IsSuccessStatusCode)
                 {
