@@ -3,8 +3,6 @@ using AuthCodePKCEServerSide;
 using AuthCodePKCEServerSide.TokenValidators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IValidatorFactory, ValidatorFactory >();
+builder.Services.AddSingleton<ITokenCache, TokenCache >();
 builder.Services.Configure <IdpSettings >(builder.Configuration.GetSection("Idp"));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
