@@ -43,14 +43,12 @@ namespace TestOktaPKCE
                 {
                     new KeyValuePair<string, string>("UserId",userId) 
                 });
-
                 var response = await httpClient.PostAsync(requestUri, content).ConfigureAwait(false);
 
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new Exception("Failed to refresh token.");
                 }
-
                 var accessToken = await response.Content.ReadAsStringAsync();
                 return accessToken; // Process the token response as needed
             }

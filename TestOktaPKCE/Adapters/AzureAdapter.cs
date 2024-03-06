@@ -44,27 +44,6 @@ public class AzureAdapter : IIdpAdapter
             return Tuple.Create(codeVerifier, authorizationRequest);
         }
 
-        public async Task<Dictionary<string, string>> RefreshAccessToken(string refreshToken, HttpClient httpClient)
-        {
-            var tokenEndpoint = $"https://login.microsoftonline.com/{TenantId}/oauth2/v2.0/token";
-            var requestContent = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("grant_type", "refresh_token"),
-                new KeyValuePair<string, string>("refresh_token", refreshToken),
-                new KeyValuePair<string, string>("client_id", ClientId),
-                new KeyValuePair<string, string>("scope", "offline_access openid"),
-                new KeyValuePair<string, string>("redirect", RedirectUri)
-            });
-
-            var response = await httpClient.PostAsync(tokenEndpoint, requestContent).ConfigureAwait(false);
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception("Error while refreshing token.");
-            }
-
-            var jsonContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            var tokens = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonContent);
-            return tokens;
-        }
+     
     }
 }

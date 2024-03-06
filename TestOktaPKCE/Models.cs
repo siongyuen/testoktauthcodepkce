@@ -44,8 +44,7 @@ namespace TestOktaPKCE
             string ClientId { get; }
             string RedirectUri { get; }
 
-            Tuple<string, string> StartAuthorization(string state);
-            Task<Dictionary<string, string>> RefreshAccessToken(string refreshToken, HttpClient httpClient);
+            Tuple<string, string> StartAuthorization(string state);   
         }
 
     }

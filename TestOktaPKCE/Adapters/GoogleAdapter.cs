@@ -42,27 +42,6 @@ namespace TestOktaPKCE
             return Tuple.Create(codeVerifier, authorizationRequest);
         }
 
-        public async Task<Dictionary<string, string>> RefreshAccessToken(string refreshToken, HttpClient httpClient)
-        {
-            var tokenEndpoint = "https://oauth2.googleapis.com/token";
-            var requestContent = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("grant_type", "refresh_token"),
-                new KeyValuePair<string, string>("refresh_token", refreshToken),
-                new KeyValuePair<string, string>("client_id", ClientId),
-                new KeyValuePair<string, string>("client_secret", ClientSecret),//must have client secret for google
-                new KeyValuePair<string, string>("scope", "openid email profile"),
-            });
-            
-            var response = await httpClient.PostAsync(tokenEndpoint, requestContent).ConfigureAwait(false);
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception("Error while refreshing token.");
-            }
 
-            var jsonContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            var tokens = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonContent);
-            return tokens;
-        }
     }
 }

@@ -46,6 +46,7 @@ namespace AuthCodePKCEServerSide.Controllers
                 var jsonContent = await response.Content.ReadAsStringAsync();
                 var tokens = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonContent);
                 tokens.TryGetValue("refresh_token", out var refreshToken);
+
                 _tokenCache.SetTokens("siongyuen.cheah@goviewpoint.com", refreshToken);
                 return Ok(jsonContent);
             }
