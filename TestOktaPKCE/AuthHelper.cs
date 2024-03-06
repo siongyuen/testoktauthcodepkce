@@ -34,16 +34,15 @@ namespace TestOktaPKCE
             return await response.Content.ReadAsStringAsync();
         }
 
-        public static async Task<string> RefreshToken(string userId)
+        public static async Task<string> RefreshToken(string serverEndpoint, string userId)
         {
             using (var httpClient = new HttpClient())
-            {
-                var requestUri = "https://localhost:7064/refresh-token"; 
+            {            
                 var content = new FormUrlEncodedContent(new[]
                 {
                     new KeyValuePair<string, string>("UserId",userId) 
                 });
-                var response = await httpClient.PostAsync(requestUri, content).ConfigureAwait(false);
+                var response = await httpClient.PostAsync(serverEndpoint, content).ConfigureAwait(false);
 
                 if (!response.IsSuccessStatusCode)
                 {
