@@ -133,7 +133,7 @@ namespace TestOktaPKCE
             try
             {
                 string state = "random";
-                var idpConfig = new GoogleAdapter ("", "", RedirectUri);
+                var idpConfig = new GoogleAdapter ("", RedirectUri);
                 var result = AuthHelper.StartAuthorization(idpConfig, state);
                 httpListener.SetCodeVerifier(result.Item1);
                 httpListener.SetExpectedState(state);
@@ -152,7 +152,7 @@ namespace TestOktaPKCE
             try
             {
                 string state = "random";
-                var idpConfig = new GoogleAdapter ("518065221759-v44j9p3t6fil3thllii3mk5dn64q4e3m.apps.googleusercontent.com", "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", RedirectUri );
+                var idpConfig = new GoogleAdapter ("518065221759-v44j9p3t6fil3thllii3mk5dn64q4e3m.apps.googleusercontent.com", RedirectUri );
                 var result = AuthHelper.StartAuthorization(idpConfig, state);
                 httpListener.SetCodeVerifier(result.Item1);
                 httpListener.SetExpectedState(state);

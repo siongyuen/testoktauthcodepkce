@@ -14,13 +14,11 @@ namespace TestOktaPKCE
     public class GoogleAdapter : IIdpAdapter
     {
         public string ClientId { get; private set; }
-        public string ClientSecret { get; private set; } // Required for token exchange
         public string RedirectUri { get; private set; }
 
-        public GoogleAdapter(string clientId, string clientSecret, string redirectUri)
+        public GoogleAdapter(string clientId, string redirectUri)
         {
-            ClientId = clientId;
-            ClientSecret = clientSecret;
+            ClientId = clientId;  
             RedirectUri = redirectUri;
         }
 
