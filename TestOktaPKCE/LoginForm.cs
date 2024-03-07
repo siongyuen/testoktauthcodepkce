@@ -24,6 +24,10 @@ namespace TestOktaPKCE
             httpListener.Start();            
         }
 
+        public void LoginForm_Load(object sender, object eventArgs)
+        { }
+
+
         private void HttpListener_AccessTokenObtained(object sender, string  accessToken)
         {
             MessageBox.Show("Access Token Obtain : " + accessToken);
