@@ -42,7 +42,6 @@ namespace TestOktaPKCE
             {
                 var context = await httpListener.GetContextAsync();
                 var request = context.Request;
-
                 if (request.Url.AbsolutePath == "/callback")
                 {
                     // Process the callback
@@ -55,15 +54,11 @@ namespace TestOktaPKCE
         {
             NameValueCollection query = request.QueryString;
             string code = query["code"];
-            string state = query["state"];
-
-            
+            string state = query["state"];            
             if (state != _expectedState)
             {
-                Console.WriteLine("State value did not match expected value.");
-                return;
+                throw new Exception ("State value did not match expected value.");                
             }
-
             string tokenResponseInString = await AuthHelper.SendCodeToServerAsync("https://localhost:7064/exchange-code", code, _codeVerifier);
             var tokenResponse = JsonConvert.DeserializeObject<Models.TokenResponse>(tokenResponseInString);
 

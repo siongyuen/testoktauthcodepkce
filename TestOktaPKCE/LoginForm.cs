@@ -24,19 +24,11 @@ namespace TestOktaPKCE
             httpListener.TokenResponseObtained += HttpListener_AccessTokenObtained;
             httpListener.Start();            
         }
-        
-
-        private void LoginForm_Load(object sender, EventArgs e)
-        {
-
-        }
 
         private void HttpListener_AccessTokenObtained(object sender, string  accessToken)
         {
             MessageBox.Show("Access Token Obtain : " + accessToken);
-            _accessToken = accessToken;  
-
-            // Update UI or internal state as necessary
+            _accessToken = accessToken;            
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -62,18 +54,13 @@ namespace TestOktaPKCE
             try
             {
                 var result = GetWeatherForecast();
-
                 MessageBox.Show($"Temperature from API is : {result.FirstOrDefault().TemperatureC.ToString()}");
-
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error: {ex.Message}");
             }
         }
-
-
-
 
         public IEnumerable<Models.WeatherForecast> GetWeatherForecast()
         {
@@ -96,8 +83,7 @@ namespace TestOktaPKCE
             }
            ;
         }
-       
-    
+          
 
         private void button6_Click(object sender, EventArgs e)
         {
@@ -141,8 +127,7 @@ namespace TestOktaPKCE
                 MessageBox.Show($"Error: {ex.Message}");
             }
         }
-
-       
+               
         private void button5_Click_1(object sender, EventArgs e)
         {
             try
@@ -161,6 +146,5 @@ namespace TestOktaPKCE
             }
         } 
     }
-
    
 }
