@@ -12,7 +12,6 @@ namespace TestOktaPKCE
 {
     public partial class LoginForm : Form
     {
-
         private readonly string RedirectUri = ConfigurationManager.AppSettings["RedirectUri"];   
         private string _accessToken;        
         private readonly HttpAuthenticationListener httpListener;
@@ -82,8 +81,7 @@ namespace TestOktaPKCE
                 return null;
             }
            ;
-        }
-          
+        }        
 
         private void button6_Click(object sender, EventArgs e)
         {
@@ -109,7 +107,7 @@ namespace TestOktaPKCE
 
             MessageBox.Show($"refreshed access token : {_accessToken}");
         }
-
+        
         private void button5_Click(object sender, EventArgs e)
         {
             try
@@ -145,6 +143,5 @@ namespace TestOktaPKCE
                 MessageBox.Show($"Error: {ex.Message}");
             }
         } 
-    }
-   
+    }  
 }
