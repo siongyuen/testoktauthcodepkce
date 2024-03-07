@@ -13,13 +13,9 @@ namespace TestOktaPKCE
     
 public class AzureAdapter : IIdpAdapter
     {
-        public string Domain { get; private set; }
         public string ClientId { get; private set; }
         public string RedirectUri { get; private set; }
-
         public string TenantId { get; private set; }
-
-
         public AzureAdapter( string clientId, string redirectUri, string tenantId)       {
     
             ClientId = clientId;

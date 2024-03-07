@@ -49,7 +49,7 @@ namespace TestOktaPKCE
                     throw new Exception("Failed to refresh token.");
                 }
                 var accessToken = await response.Content.ReadAsStringAsync();
-                return accessToken; // Process the token response as needed
+                return accessToken; 
             }
         }
     }
