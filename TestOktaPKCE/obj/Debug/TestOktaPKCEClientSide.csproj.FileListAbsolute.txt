@@ -41,3 +41,4 @@ C:\Users\SeanCheahSiongYuen\Source\Repos\testoktauthcodepkce\TestOktaPKCE\obj\De
 C:\Users\SeanCheahSiongYuen\Source\Repos\testoktauthcodepkce\TestOktaPKCE\obj\Debug\TestOktaPKCE.pdb
 C:\Users\SeanCheahSiongYuen\Source\Repos\testoktauthcodepkce\TestOktaPKCE\bin\Debug\Newtonsoft.Json.dll
 C:\Users\SeanCheahSiongYuen\Source\Repos\testoktauthcodepkce\TestOktaPKCE\bin\Debug\Newtonsoft.Json.xml
+C:\Users\SeanCheahSiongYuen\Source\Repos\testoktauthcodepkce\TestOktaPKCE\bin\Debug\config.ini

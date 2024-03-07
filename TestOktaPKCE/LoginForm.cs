@@ -13,9 +13,9 @@ namespace TestOktaPKCE
     public partial class LoginForm : Form
     {
 
-        private readonly string RedirectUri = ConfigurationManager.AppSettings["General:RedirectUri"];
-        private readonly string OktaDomain = ConfigurationManager.AppSettings["Okta:OktaDomain"];
-        private readonly string OktaClientId = ConfigurationManager.AppSettings["Okta:OktaClientId"];
+        private readonly string RedirectUri = ConfigurationManager.AppSettings["RedirectUri"];
+        private readonly string OktaDomain = ConfigurationManager.AppSettings["OktaDomain"];
+        private readonly string OktaClientId = ConfigurationManager.AppSettings["OktaClientId"];
         private static readonly HttpClient httpClient = new HttpClient();
         private string _accessToken;
         
@@ -124,7 +124,7 @@ namespace TestOktaPKCE
 
         private void button4_Click(object sender, EventArgs e)
         {
-            _accessToken = AuthHelper.RefreshToken("https://localhost:7064/refresh-token", ConfigurationManager.AppSettings["General:EmailForRefreshToken"]).Result;
+            _accessToken = AuthHelper.RefreshToken("https://localhost:7064/refresh-token", ConfigurationManager.AppSettings["EmailForRefreshToken"]).Result;
 
             MessageBox.Show($"refreshed access token : {_accessToken}");
         }
@@ -134,7 +134,7 @@ namespace TestOktaPKCE
             try
             {
                 string state = "random";
-                var idpConfig = new GoogleAdapter (ConfigurationManager.AppSettings["Google:ClientId"], RedirectUri);
+                var idpConfig = new GoogleAdapter (ConfigurationManager.AppSettings["GoogleClientId"], RedirectUri);
                 var result = AuthHelper.StartAuthorization(idpConfig, state);
                 httpListener.SetCodeVerifier(result.Item1);
                 httpListener.SetExpectedState(state);
@@ -153,7 +153,7 @@ namespace TestOktaPKCE
             try
             {
                 string state = "random";
-                var idpConfig = new GoogleAdapter (ConfigurationManager.AppSettings["Google:ClientId"], RedirectUri );
+                var idpConfig = new GoogleAdapter (ConfigurationManager.AppSettings["GoogleClientId"], RedirectUri );
                 var result = AuthHelper.StartAuthorization(idpConfig, state);
                 httpListener.SetCodeVerifier(result.Item1);
                 httpListener.SetExpectedState(state);
