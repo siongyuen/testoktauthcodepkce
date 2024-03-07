@@ -67,3 +67,4 @@ bin/
 /AuthCodePKCEServerSide/appsettings.json
 /TestOktaPKCE/config.ini
 /TestOktaPKCE/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+/TestOktaPKCE/obj/Release/TestOktaPKCEClientSide.csproj.AssemblyReference.cache
