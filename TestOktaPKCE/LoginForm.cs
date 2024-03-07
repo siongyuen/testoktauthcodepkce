@@ -6,15 +6,16 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Windows.Forms;
+using System.Configuration;
 
 namespace TestOktaPKCE
 {
     public partial class LoginForm : Form
     {
-        
-        private const string RedirectUri = "http://localhost:12345/callback";      
-        private const string OktaDomain = "https://dev-95411323.okta.com"; // Replace with your Okta domain
-        private const string OktaClientId = "0oaefdvlfqiav6snB5d7"; // Replace with your client ID
+
+        private readonly string RedirectUri = ConfigurationManager.AppSettings["General:RedirectUri"];
+        private readonly string OktaDomain = ConfigurationManager.AppSettings["Okta:OktaDomain"];
+        private readonly string OktaClientId = ConfigurationManager.AppSettings["Okta:OktaClientId"];
         private static readonly HttpClient httpClient = new HttpClient();
         private string _accessToken;
         
@@ -123,7 +124,7 @@ namespace TestOktaPKCE
 
         private void button4_Click(object sender, EventArgs e)
         {
-            _accessToken = AuthHelper.RefreshToken("https://localhost:7064/refresh-token", "siongyuen.cheah@goviewpoint.com").Result;
+            _accessToken = AuthHelper.RefreshToken("https://localhost:7064/refresh-token", ConfigurationManager.AppSettings["General:EmailForRefreshToken"]).Result;
 
             MessageBox.Show($"refreshed access token : {_accessToken}");
         }
@@ -133,7 +134,7 @@ namespace TestOktaPKCE
             try
             {
                 string state = "random";
-                var idpConfig = new GoogleAdapter ("", RedirectUri);
+                var idpConfig = new GoogleAdapter (ConfigurationManager.AppSettings["Google:ClientId"], RedirectUri);
                 var result = AuthHelper.StartAuthorization(idpConfig, state);
                 httpListener.SetCodeVerifier(result.Item1);
                 httpListener.SetExpectedState(state);
@@ -152,7 +153,7 @@ namespace TestOktaPKCE
             try
             {
                 string state = "random";
-                var idpConfig = new GoogleAdapter ("518065221759-v44j9p3t6fil3thllii3mk5dn64q4e3m.apps.googleusercontent.com", RedirectUri );
+                var idpConfig = new GoogleAdapter (ConfigurationManager.AppSettings["Google:ClientId"], RedirectUri );
                 var result = AuthHelper.StartAuthorization(idpConfig, state);
                 httpListener.SetCodeVerifier(result.Item1);
                 httpListener.SetExpectedState(state);
