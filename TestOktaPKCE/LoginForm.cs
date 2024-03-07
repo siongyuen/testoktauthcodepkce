@@ -13,14 +13,9 @@ namespace TestOktaPKCE
     public partial class LoginForm : Form
     {
 
-        private readonly string RedirectUri = ConfigurationManager.AppSettings["RedirectUri"];
-        private readonly string OktaDomain = ConfigurationManager.AppSettings["OktaDomain"];
-        private readonly string OktaClientId = ConfigurationManager.AppSettings["OktaClientId"];
-        private static readonly HttpClient httpClient = new HttpClient();
-        private string _accessToken;
-        
+        private readonly string RedirectUri = ConfigurationManager.AppSettings["RedirectUri"];   
+        private string _accessToken;        
         private readonly HttpAuthenticationListener httpListener;
-
 
         public LoginForm()
         {
@@ -49,7 +44,7 @@ namespace TestOktaPKCE
             try
             {
                 string state = "random";
-                var oktaConfig = new OktaAdapter(OktaDomain, OktaClientId, RedirectUri);
+                var oktaConfig = new OktaAdapter(ConfigurationManager.AppSettings["OktaDomain"], ConfigurationManager.AppSettings["OktaClientId"], RedirectUri);
                 var result = AuthHelper.StartAuthorization(oktaConfig, state);
                 httpListener.SetCodeVerifier(result.Item1);
                 httpListener.SetExpectedState(state);
@@ -82,7 +77,7 @@ namespace TestOktaPKCE
 
         public IEnumerable<Models.WeatherForecast> GetWeatherForecast()
         {
-
+            HttpClient httpClient = new HttpClient();            
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));            
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
