@@ -65,3 +65,4 @@ bin/
 **/bin/*
 **/obj/*
 /AuthCodePKCEServerSide/appsettings.json
+/TestOktaPKCE/config.ini
