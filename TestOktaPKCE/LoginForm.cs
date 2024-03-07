@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Windows.Forms;
 using System.Configuration;
+using System.Collections;
 
 namespace TestOktaPKCE
 {
@@ -15,6 +16,7 @@ namespace TestOktaPKCE
         private readonly string RedirectUri = ConfigurationManager.AppSettings["RedirectUri"];   
         private string _accessToken;        
         private readonly HttpAuthenticationListener httpListener;
+        private static Random random = new Random();
 
         public LoginForm()
         {
@@ -27,7 +29,6 @@ namespace TestOktaPKCE
         public void LoginForm_Load(object sender, object eventArgs)
         { }
 
-
         private void HttpListener_AccessTokenObtained(object sender, string  accessToken)
         {
             MessageBox.Show("Access Token Obtain : " + accessToken);
@@ -38,9 +39,9 @@ namespace TestOktaPKCE
         {
             try
             {
-                string state = "random";
-                var oktaConfig = new OktaAdapter(ConfigurationManager.AppSettings["OktaDomain"], ConfigurationManager.AppSettings["OktaClientId"], RedirectUri);
-                var result = AuthHelper.StartAuthorization(oktaConfig, state);
+                string state = GenerateRandomString();
+                var adapter = GetAdapter(comboBox1.Text);
+                var result = AuthHelper.StartAuthorization(adapter, state);
                 httpListener.SetCodeVerifier(result.Item1);
                 httpListener.SetExpectedState(state);
                 var authorizationRequest = result.Item2;
@@ -85,67 +86,35 @@ namespace TestOktaPKCE
                 return null;
             }
            ;
-        }        
-
-        private void button6_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                string state = "random";
-                var azureAdapter = new AzureAdapter (ConfigurationManager.AppSettings["AzureClientId"], RedirectUri , ConfigurationManager.AppSettings["AzureTenantId"]);
-                var result = AuthHelper.StartAuthorization(azureAdapter, state);
-                httpListener.SetCodeVerifier(result.Item1);
-                httpListener.SetExpectedState(state);
-                var authorizationRequest = result.Item2;
-                System.Diagnostics.Process.Start(authorizationRequest);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}");
-            }
-        }
+        }         
 
         private void button4_Click(object sender, EventArgs e)
         {
             _accessToken = AuthHelper.RefreshToken("https://localhost:7064/refresh-token", ConfigurationManager.AppSettings["EmailForRefreshToken"]).Result;
 
             MessageBox.Show($"refreshed access token : {_accessToken}");
-        }
-        
-        private void button5_Click(object sender, EventArgs e)
+        }      
+      
+        private Models. IIdpAdapter GetAdapter(string adapterName)
         {
-            try
+            switch(adapterName)
             {
-                string state = "random";
-                var idpConfig = new GoogleAdapter (ConfigurationManager.AppSettings["GoogleClientId"], RedirectUri);
-                var result = AuthHelper.StartAuthorization(idpConfig, state);
-                httpListener.SetCodeVerifier(result.Item1);
-                httpListener.SetExpectedState(state);
-                var authorizationRequest = result.Item2;
-                System.Diagnostics.Process.Start(authorizationRequest);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}");
+                case "Azure":
+                    return  new AzureAdapter(ConfigurationManager.AppSettings["AzureClientId"], RedirectUri, ConfigurationManager.AppSettings["AzureTenantId"]);
+                case "Google":
+                    return new GoogleAdapter(ConfigurationManager.AppSettings["GoogleClientId"], RedirectUri);
+                case "Okta":
+                    return new OktaAdapter(ConfigurationManager.AppSettings["OktaDomain"], ConfigurationManager.AppSettings["OktaClientId"], RedirectUri);
+                default:
+                    throw new ArgumentException("Invalid Idp");
             }
         }
-               
-        private void button5_Click_1(object sender, EventArgs e)
+
+        public static string GenerateRandomString(int length = 6)
         {
-            try
-            {
-                string state = "random";
-                var idpConfig = new GoogleAdapter (ConfigurationManager.AppSettings["GoogleClientId"], RedirectUri );
-                var result = AuthHelper.StartAuthorization(idpConfig, state);
-                httpListener.SetCodeVerifier(result.Item1);
-                httpListener.SetExpectedState(state);
-                var authorizationRequest = result.Item2;
-                System.Diagnostics.Process.Start(authorizationRequest);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}");
-            }
-        } 
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
     }  
 }
