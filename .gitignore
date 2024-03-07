@@ -70,3 +70,4 @@ bin/
 /TestOktaPKCE/obj/Release/TestOktaPKCEClientSide.csproj.AssemblyReference.cache
 /TestOktaPKCE/App.config
 /.vs/slnx.sqlite-journal
+/TestOktaPKCE/obj/Debug/TestOktaPKCEClientSide.csproj.FileListAbsolute.txt
